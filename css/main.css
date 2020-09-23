@@ -72,15 +72,24 @@ header {
     fill: none;
 }
 
-.axis path,
-.axis line {
-    stroke-width: 1;
-    shape-rendering: crispEdges;
-    
+
+.domain  {
+    stroke-width: 0;
+    shape-rendering: crispEdges; 
+    opacity: 0;
 }
-.axis text {
+
+.tick line {
+    stroke-width: 3;
+    shape-rendering: crispEdges; 
+    opacity: 1;
+/*    transform: translate(0, 10);*/
+/*    margin: 10px;*/
+}
+.tick text {
     font-size: 48px;
-    margin-bottom: 12px;
+    
+/*    margin-bottom: 20px;*/
 }
 
 .gridline {
@@ -102,6 +111,8 @@ header {
 }
 
 .yeartext {
+       pointer-events : none;
+
 font-size: 20em;
 fill: grey;
 opacity: .2;
@@ -170,4 +181,15 @@ main {
       align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+.dots:hover {
+    opacity:0.5;
+    stroke: yellow;
+    color: yellow;
+}
+
+
+.lines:hover {
+pointer-events:none
 }

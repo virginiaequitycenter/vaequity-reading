@@ -230,7 +230,7 @@ function draw_viz(data) {
         .attr("r", 12)
         .style("fill", function (d) {
             return race_color(d.race)
-        });
+        }).attr("class", "dots");
 
 
     // Add in lines 
@@ -263,10 +263,14 @@ function draw_viz(data) {
             return race_color(d.key)
         });
 
+    var xdata = ["3rd", "4th", "5th", "6th", "7th", "8th"]
+    
     // Grades Scale
     graph_containers.append("g")
         .attr("class", "axis")
-        .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(d3.format(".1")))
+        .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
+		return xdata[i];
+	}).tickSize(25))
         .attr("transform", "translate(" + 0 + "," + 0 + ")");
     //    
     // graph_containers.append("g")
@@ -528,7 +532,8 @@ function draw_viz(data) {
                 .attr("r", 12)
                 .style("fill", function (d) {
                     return race_color(d.race)
-                });
+                })
+        .attr("class", "dots");
 
 
             // Add in lines 
@@ -550,11 +555,13 @@ function draw_viz(data) {
                     return race_color(d.key)
                 });
 
-            // Grades Scale
-            graph_containers.append("g")
-                .attr("class", "axis")
-                .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(d3.format(".1")))
-                .attr("transform", "translate(" + 0 + "," + 0 + ")");
+    graph_containers.append("g")
+        .attr("class", "axis")
+        .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
+		return xdata[i];
+	}).tickSize(25))
+        .attr("transform", "translate(" + 0 + "," + 0 + ")");
+    //    
    
 
 
