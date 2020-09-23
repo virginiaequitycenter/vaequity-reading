@@ -33,7 +33,7 @@ header {
 
 #graph-container {
     margin:0px;
-    padding:10px;
+    padding:20px;
     display: flex;
     flex-wrap:wrap;
     flex-direction: row;
@@ -43,7 +43,7 @@ header {
 .column {
     background-color:none;
 /*    border: 2px solid white;*/
-    padding:1px;
+    padding:0px;
     margin:0px;
     min-width: 100px;
     flex-grow: 1;
@@ -53,8 +53,11 @@ header {
 }
 
 .cohort_box {
-    background-color:none;
-/*    border: 2px solid white;*/
+    background-color: rgba(255, 255, 255, .8);
+    
+    border: 1px dashed black;
+    margin: 7px;
+    border-radius: 5px;
 }
 
 .svg-content {

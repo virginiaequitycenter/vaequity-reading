@@ -134,7 +134,7 @@ function draw_viz(data) {
         .style("fill", (d) => positive_color(d))
         .classed("positive_rects backrect", true);
 
-    var xScale = d3.scaleLinear().domain([2.75, 8.25]).range([0, width]);
+    var xScale = d3.scaleLinear().domain([2.5, 8.5]).range([0, width]);
     var yScale = d3.scaleLinear().domain([40, 100]).range([height, 0])
 
     // Create the path clippings to divide the positive from the negative gradient
@@ -271,10 +271,10 @@ var dotcontainers = graph_containers
     // Grades Scale
     graph_containers.append("g")
         .attr("class", "axis")
-        .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
+        .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
 		return xdata[i];
 	}).tickSize(25))
-        .attr("transform", "translate(" + 0 + "," + 0 + ")");
+        .attr("transform", "translate(" + 0 + "," + (height - 35) + ")");
     //    
     // graph_containers.append("g")
     //    .call(d3.axisLeft().scale(yScale))
@@ -461,37 +461,40 @@ var dotcontainers = graph_containers
                     return "url(#area" + d.key + d.values[[0]].values[[0]].division_use + ")"
                 });
             //
-            var negative = gradient_containers.append("g")
-                .attr("id", function (d) {
-                    return "gradientBlack" + d.key
-                })
-                .selectAll(".negative_rects")
-                .data(number_scale)
-                .enter()
-                .append("rect")
-                .attr("x", 0)
-                .attr("y", (d) => color_scale(d + 1))
-                .attr("width", width)
-                .attr("height", (d) => color_scale(d))
-                .style("fill", (d) => negative_color(d))
-                .classed("negative_rects backrect", true);
+        
+       var negative = gradient_containers.append("g")
+        .attr("id", function (d) {
+            return "gradientBlack" + d.key
+        })
+        .selectAll(".negative_rects")
+        .data(number_scale)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", (d) => color_scale(d))
+        .attr("width", width)
+        .attr("height", height / N)
+        .style("fill", (d) => negative_color(d))
+        .classed("negative_rects backrect", true);
 
-            var positive = gradient_containers
-                .append("g")
-                .attr("id", function (d) {
-                    return "gradientWhite" + d.key
-                })
-                .attr("clip-path", function (d) {
-                    return "url(#pathAll" + d.key + d.values[[0]].values[[0]].division_use + ")"
-                }) // Divide the positive from the negative gradient along the average line. 
-                .selectAll(".positive_rects")
-                .data(number_scale).enter().append("rect")
-                .attr("x", 0)
-                .attr("y", (d) => color_scale(d + 1))
-                .attr("width", width)
-                .attr("height", (d) => color_scale(d))
-                .style("fill", (d) => positive_color(d))
-                .classed("positive_rects backrect", true);
+
+
+    var positive = gradient_containers
+        .append("g")
+        .attr("id", function (d) {
+            return "gradientWhite" + d.key
+        })
+        .attr("clip-path", function (d) {
+            return "url(#pathAll" + d.key + d.values[[0]].values[[0]].division_use + ")"
+        }) // Divide the positive from the negative gradient along the average line. 
+        .selectAll(".positive_rects")
+        .data(number_scale).enter().append("rect")
+        .attr("x", 0)
+        .attr("y", (d) => color_scale(d))
+        .attr("width", width)
+        .attr("height", height / N)
+        .style("fill", (d) => positive_color(d))
+        .classed("positive_rects backrect", true);
 
             gradient_containers
                 .selectAll(".seperators")
@@ -573,13 +576,13 @@ var dotcontainers = graph_containers
         }).attr("class", "dots")
     
     
-
+//Grades SCale
     graph_containers.append("g")
         .attr("class", "axis")
-        .call(d3.axisTop().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
+        .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
 		return xdata[i];
 	}).tickSize(25))
-        .attr("transform", "translate(" + 0 + "," + 0 + ")");
+        .attr("transform", "translate(" + 0 + "," + (height - 35) + ")");
     //    
    
 
