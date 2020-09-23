@@ -205,34 +205,7 @@ function draw_viz(data) {
 
 
     var race_color = d3.scaleOrdinal().domain(["White", "All", "Black"]).range(["#00008b", "black", "rgb(194, 50, 10)"])
-
-
-    // Add in dots
-
-    graph_containers
-        .selectAll(".dotcontainer")
-        .data((d) => d.values)
-        .enter()
-        .append("g")
-        .attr("class", function (d) {
-            return "dotcontainer dots" + d.key
-        })
-        .selectAll(".dots")
-        .data((d) => d.values)
-        .enter()
-        .append("circle")
-        .attr("cx", function (d) {
-            return xScale(+d.grade);
-        })
-        .attr("cy", function (d) {
-            return yScale(+d.pass_rate);
-        })
-        .attr("r", 12)
-        .style("fill", function (d) {
-            return race_color(d.race)
-        }).attr("class", "dots");
-
-
+    
     // Add in lines 
 
     // Create the line generation function
@@ -262,6 +235,36 @@ function draw_viz(data) {
         .attr("stroke", function (d) {
             return race_color(d.key)
         });
+
+
+    // Add in dots
+
+var dotcontainers = graph_containers
+        .selectAll(".dotcontainer")
+        .data((d) => d.values)
+        .enter()
+        .append("g")
+        .attr("class", function (d) {
+            return "dotcontainer dots" + d.key
+        });
+
+        dotcontainers.selectAll(".dots")
+        .data((d) => d.values)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            return xScale(+d.grade);
+        })
+        .attr("cy", function (d) {
+            return yScale(+d.pass_rate);
+        })
+        .attr("r", 12)
+        .style("fill", function (d) {
+            return race_color(d.race)
+        }).attr("class", "dots")
+    
+    
+
 
     var xdata = ["3rd", "4th", "5th", "6th", "7th", "8th"]
     
@@ -318,8 +321,22 @@ function draw_viz(data) {
         .text((d) => d.key)
         .attr("class", "yeartext")
         .attr("transform", "translate(" + usewidth / 2 + "," + useheight / 2 + ")")
-
     
+    
+// hover dot labels
+  dotcontainers.selectAll(".hovertext")
+          .data((d) => d.values)
+          .enter()
+          .append("text")
+          .attr("class", "hovertext")
+          .text((d) => Math.round(d.pass_rate) + "%")
+          .attr("x", function (d) {
+            return xScale(+d.grade);
+        })
+        .attr("y", function (d) {
+            return yScale(+d.pass_rate) - 10;
+        });
+  
     
 // create checkbox interfaces
 
@@ -509,51 +526,53 @@ function draw_viz(data) {
                 .attr("d", (d) => gap_area(d.values));
 
 
-            // Add in dots
+// add in new lines
 
-            graph_containers
-                .selectAll(".dotcontainer")
-                .data((d) => d.values)
-                .enter()
-                .append("g")
-                .attr("class", function (d) {
-                    return "dotcontainer dots" + d.key
-                })
-                .selectAll(".dots")
-                .data((d) => d.values)
-                .enter()
-                .append("circle")
-                .attr("cx", function (d) {
-                    return xScale(+d.grade);
-                })
-                .attr("cy", function (d) {
-                    return yScale(+d.pass_rate);
-                })
-                .attr("r", 12)
-                .style("fill", function (d) {
-                    return race_color(d.race)
-                })
-        .attr("class", "dots");
+    graph_containers
+        .selectAll(".linecontainer")
+        .data((d) => d.values)
+        .enter()
+        .append("g")
+        .attr("class", function (d) {
+            return "linecontainer linescontainer" + d.key
+        })
+        .append("path")
+        .attr("d", (d) => lines(d.values))
+        .attr("class", function (d) {
+            return "lines line" + d.key
+        })
+        .attr("stroke", function (d) {
+            return race_color(d.key)
+        });
 
 
-            // Add in lines 
+    // Add in dots
 
-            graph_containers
-                .selectAll(".linecontainer")
-                .data((d) => d.values)
-                .enter()
-                .append("g")
-                .attr("class", function (d) {
-                    return "linecontainer linescontainer" + d.key
-                })
-                .append("path")
-                .attr("d", (d) => lines(d.values))
-                .attr("class", function (d) {
-                    return "lines line" + d.key
-                })
-                .attr("stroke", function (d) {
-                    return race_color(d.key)
-                });
+var dotcontainers = graph_containers
+        .selectAll(".dotcontainer")
+        .data((d) => d.values)
+        .enter()
+        .append("g")
+        .attr("class", function (d) {
+            return "dotcontainer dots" + d.key
+        });
+
+        dotcontainers.selectAll(".dots")
+        .data((d) => d.values)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            return xScale(+d.grade);
+        })
+        .attr("cy", function (d) {
+            return yScale(+d.pass_rate);
+        })
+        .attr("r", 12)
+        .style("fill", function (d) {
+            return race_color(d.race)
+        }).attr("class", "dots")
+    
+    
 
     graph_containers.append("g")
         .attr("class", "axis")
@@ -577,6 +596,21 @@ function draw_viz(data) {
         .text((d) => Math.round(d.values[[0]].pass_rate) + "%")
         .attr("x", xScale(2.9))
         .attr("y", (d) => yScale(d.values[[0]].pass_rate))
+        
+        
+        // hover dot labels
+  dotcontainers.selectAll(".hovertext")
+          .data((d) => d.values)
+          .enter()
+          .append("text")
+          .attr("class", "hovertext")
+          .text((d) => Math.round(d.pass_rate) + "%")
+          .attr("x", function (d) {
+            return xScale(+d.grade);
+        })
+        .attr("y", function (d) {
+            return yScale(+d.pass_rate) - 10;
+        });
     
 
             cohort_svg
@@ -588,6 +622,7 @@ function draw_viz(data) {
 
         });
 
+    
 
 
 

@@ -193,3 +193,16 @@ main {
 .lines:hover {
 pointer-events:none
 }
+
+.hovertext {
+    font-size: 50px;
+    z-index: 100;
+    opacity: 0;
+ text-anchor: middle;
+     alignment-baseline: middle;
+
+}
+.hovertext:hover {
+    opacity: 1;
+  cursor: pointer;
+}
