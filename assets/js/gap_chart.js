@@ -249,7 +249,7 @@ var dotcontainers = graph_containers
         });
 
         dotcontainers.selectAll(".dots")
-        .data((d) => d.values)
+        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
         .enter()
         .append("circle")
         .attr("cx", function (d) {
@@ -306,11 +306,11 @@ var dotcontainers = graph_containers
 
     
   graph_containers.selectAll(".startlabels")
-        .data( (d) => d.values)
+        .data( (d) => d.values.filter((q) => !isNaN( q.values[[0]].pass_rate )))
         .enter()
         .append("text")
         .attr("class", "startlabels")
-        .text((d) => Math.round(d.values[[0]].pass_rate) + "%")
+        .text( (d) => Math.round(d.values[[0]].pass_rate) + "%" )
         .attr("x", xScale(2.9))
         .attr("y", (d) => yScale(d.values[[0]].pass_rate))
     
@@ -325,7 +325,7 @@ var dotcontainers = graph_containers
     
 // hover dot labels
   dotcontainers.selectAll(".hovertext")
-          .data((d) => d.values)
+        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
           .enter()
           .append("text")
           .attr("class", "hovertext")
@@ -561,7 +561,7 @@ var dotcontainers = graph_containers
         });
 
         dotcontainers.selectAll(".dots")
-        .data((d) => d.values)
+        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
         .enter()
         .append("circle")
         .attr("cx", function (d) {
@@ -603,7 +603,7 @@ var dotcontainers = graph_containers
         
         // hover dot labels
   dotcontainers.selectAll(".hovertext")
-          .data((d) => d.values)
+        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
           .enter()
           .append("text")
           .attr("class", "hovertext")
