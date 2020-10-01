@@ -139,7 +139,7 @@ function draw_viz(data) {
 
     // Create the path clippings to divide the positive from the negative gradient
     var gradient_area = d3.area()
-         .defined(d => !isNaN(d.pass_rate))
+        .defined(d => !isNaN(d.pass_rate))
         .x(function (d) {
             return xScale(+d.grade);
         })
@@ -148,12 +148,12 @@ function draw_viz(data) {
         })
         .y1(function (d) {
             return yScale(+d.pass_rate);
-        })      .curve(d3.curveMonotoneX);
+        }).curve(d3.curveMonotoneX);
 
 
 
     gradient_containers
-        .selectAll(".seperators")
+        .selectAll(".clip_sep")
         .data((d) => d.values.filter(function (el) {
             return el.key === "All"
         }))
@@ -164,7 +164,8 @@ function draw_viz(data) {
         })
         .append("path")
         //       .attr("class", function(d){ return "areas " + d.key})
-        .attr("d", (d) => gradient_area(d.values));
+        .attr("d", (d) => gradient_area(d.values))
+        .attr("class", "seperators");
 
 
     // create the path clippings to define the race difference areas. 
@@ -179,7 +180,7 @@ function draw_viz(data) {
         })
         .y1(function (d) {
             return yScale(+d.average);
-        })      .curve(d3.curveMonotoneX);
+        }).curve(d3.curveMonotoneX);
 
 
 
@@ -191,7 +192,7 @@ function draw_viz(data) {
             return "area" + d.values[[0]].values[[0]].cohort + d.values[[0]].values[[0]].division_use
         })
 
-// Draw two paths within each clipping path boundary
+    // Draw two paths within each clipping path boundary
     masks.selectAll("path")
         .data(
             (d) => d.values.filter(function (el) {
@@ -199,25 +200,26 @@ function draw_viz(data) {
             }))
         .enter()
         .append("path")
-        .attr("d", (d) => gap_area(d.values));
+        .attr("d", (d) => gap_area(d.values))
+        .attr("class", "gap_area")
 
 
 
 
     var race_color = d3.scaleOrdinal().domain(["White", "All", "Black"]).range(["#00008b", "black", "rgb(194, 50, 10)"])
-    
+
     // Add in lines 
 
     // Create the line generation function
     var lines = d3.line()
-       .defined(d => !isNaN(d.pass_rate))
+        .defined(d => !isNaN(d.pass_rate))
         .x(function (d) {
             return xScale(+d.grade);
         })
         .y(function (d) {
             return yScale(+d.pass_rate);
         })
-      .curve(d3.curveMonotoneX);
+        .curve(d3.curveMonotoneX);
 
     graph_containers
         .selectAll(".linecontainer")
@@ -239,7 +241,7 @@ function draw_viz(data) {
 
     // Add in dots
 
-var dotcontainers = graph_containers
+    var dotcontainers = graph_containers
         .selectAll(".dotcontainer")
         .data((d) => d.values)
         .enter()
@@ -248,32 +250,34 @@ var dotcontainers = graph_containers
             return "dotcontainer dots" + d.key
         });
 
-        dotcontainers.selectAll(".dots")
+    var doty = function (d) {
+        return yScale(+d.pass_rate);
+    }
+
+    dotcontainers.selectAll(".dots")
         .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
         .enter()
         .append("circle")
         .attr("cx", function (d) {
             return xScale(+d.grade);
         })
-        .attr("cy", function (d) {
-            return yScale(+d.pass_rate);
-        })
+        .attr("cy", doty)
         .attr("r", 12)
         .style("fill", function (d) {
             return race_color(d.race)
         }).attr("class", "dots")
-    
-    
+
+
 
 
     var xdata = ["3rd", "4th", "5th", "6th", "7th", "8th"]
-    
+
     // Grades Scale
     graph_containers.append("g")
         .attr("class", "axis")
-        .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
-		return xdata[i];
-	}).tickSize(25))
+        .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d, i) {
+            return xdata[i];
+        }).tickSize(25))
         .attr("transform", "translate(" + 0 + "," + (height - 35) + ")");
     //    
     // graph_containers.append("g")
@@ -285,60 +289,65 @@ var dotcontainers = graph_containers
 
     yvals = [50, 90];
 
-//    graph_containers.selectAll(".gridlines")
-//        .data(yvals)
-//        .enter()
-//        .append("line")
-//        .attr("x1", xScale(2.95))
-//        .attr("x2", xScale(8.05))
-//        .attr("y1", (d) => yScale(d))
-//        .attr("y2", (d) => yScale(d))
-//        .attr("class", "gridline")
-//
-//    graph_containers.selectAll(".gridlabels")
-//        .data(yvals)
-//        .enter()
-//        .append("text")
-//        .attr("class", "gridlabels")
-//        .text((d) => d + "%")
-//        .attr("x", xScale(2.9))
-//        .attr("y", (d) => yScale(d));
+    //    graph_containers.selectAll(".gridlines")
+    //        .data(yvals)
+    //        .enter()
+    //        .append("line")
+    //        .attr("x1", xScale(2.95))
+    //        .attr("x2", xScale(8.05))
+    //        .attr("y1", (d) => yScale(d))
+    //        .attr("y2", (d) => yScale(d))
+    //        .attr("class", "gridline")
+    //
+    //    graph_containers.selectAll(".gridlabels")
+    //        .data(yvals)
+    //        .enter()
+    //        .append("text")
+    //        .attr("class", "gridlabels")
+    //        .text((d) => d + "%")
+    //        .attr("x", xScale(2.9))
+    //        .attr("y", (d) => yScale(d));
 
-    
-  graph_containers.selectAll(".startlabels")
-        .data( (d) => d.values.filter((q) => !isNaN( q.values[[0]].pass_rate )))
+    var start_labely = function (d) {
+        return yScale(d.values[[0]].pass_rate)
+    };
+    var start_label_text = function (d) {
+        return Math.round(d.values[[0]].pass_rate) + "%"
+    }
+
+    graph_containers.selectAll(".startlabels")
+        .data((d) => d.values.filter((q) => !isNaN(q.values[[0]].pass_rate)))
         .enter()
         .append("text")
         .attr("class", "startlabels")
-        .text( (d) => Math.round(d.values[[0]].pass_rate) + "%" )
+        .text(start_label_text)
         .attr("x", xScale(2.9))
-        .attr("y", (d) => yScale(d.values[[0]].pass_rate))
-    
+        .attr("y", start_labely)
 
-// Add the Year text lables
+
+    // Add the Year text lables
     cohort_svg
         .append("text")
         .text((d) => d.key)
         .attr("class", "yeartext")
         .attr("transform", "translate(" + usewidth / 2 + "," + useheight / 2 + ")")
-    
-    
-// hover dot labels
-  dotcontainers.selectAll(".hovertext")
+
+
+
+    // hover dot labels
+    dotcontainers.selectAll(".hovertext")
         .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
-          .enter()
-          .append("text")
-          .attr("class", "hovertext")
-          .text((d) => Math.round(d.pass_rate) + "%")
-          .attr("x", function (d) {
+        .enter()
+        .append("text")
+        .attr("class", "hovertext")
+        .text((d) => Math.round(d.pass_rate) + "%")
+        .attr("x", function (d) {
             return xScale(+d.grade);
         })
-        .attr("y", function (d) {
-            return yScale(+d.pass_rate) - 10;
-        });
-  
-    
-// create checkbox interfaces
+        .attr("y", doty);
+
+
+    // create checkbox interfaces
 
     var checkboxcontainer = d3.select("#checkboxes");
 
@@ -368,6 +377,8 @@ var dotcontainers = graph_containers
             }
         });
 
+
+    ///////////////////////////////////////////
     // add the labels
     checkboxdivs.append("label")
         .attr("for", function (d) {
@@ -385,12 +396,10 @@ var dotcontainers = graph_containers
         }
     });
 
+    ////////////////////////////////////////
 
 
-
-
-
-// Swap in and out columns
+    // Swap in and out columns
     //On click, update with new data			
     d3.selectAll("#submitchanges")
         .on("click", function () {
@@ -461,43 +470,43 @@ var dotcontainers = graph_containers
                     return "url(#area" + d.key + d.values[[0]].values[[0]].division_use + ")"
                 });
             //
-        
-       var negative = gradient_containers.append("g")
-        .attr("id", function (d) {
-            return "gradientBlack" + d.key
-        })
-        .selectAll(".negative_rects")
-        .data(number_scale)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", (d) => color_scale(d))
-        .attr("width", width)
-        .attr("height", height / N)
-        .style("fill", (d) => negative_color(d))
-        .classed("negative_rects backrect", true);
+
+            var negative = gradient_containers.append("g")
+                .attr("id", function (d) {
+                    return "gradientBlack" + d.key
+                })
+                .selectAll(".negative_rects")
+                .data(number_scale)
+                .enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", (d) => color_scale(d))
+                .attr("width", width)
+                .attr("height", height / N)
+                .style("fill", (d) => negative_color(d))
+                .classed("negative_rects backrect", true);
 
 
 
-    var positive = gradient_containers
-        .append("g")
-        .attr("id", function (d) {
-            return "gradientWhite" + d.key
-        })
-        .attr("clip-path", function (d) {
-            return "url(#pathAll" + d.key + d.values[[0]].values[[0]].division_use + ")"
-        }) // Divide the positive from the negative gradient along the average line. 
-        .selectAll(".positive_rects")
-        .data(number_scale).enter().append("rect")
-        .attr("x", 0)
-        .attr("y", (d) => color_scale(d))
-        .attr("width", width)
-        .attr("height", height / N)
-        .style("fill", (d) => positive_color(d))
-        .classed("positive_rects backrect", true);
+            var positive = gradient_containers
+                .append("g")
+                .attr("id", function (d) {
+                    return "gradientWhite" + d.key
+                })
+                .attr("clip-path", function (d) {
+                    return "url(#pathAll" + d.key + d.values[[0]].values[[0]].division_use + ")"
+                }) // Divide the positive from the negative gradient along the average line. 
+                .selectAll(".positive_rects")
+                .data(number_scale).enter().append("rect")
+                .attr("x", 0)
+                .attr("y", (d) => color_scale(d))
+                .attr("width", width)
+                .attr("height", height / N)
+                .style("fill", (d) => positive_color(d))
+                .classed("positive_rects backrect", true);
 
             gradient_containers
-                .selectAll(".seperators")
+                .selectAll(".clip_sep")
                 .data((d) => d.values.filter(function (el) {
                     return el.key === "All"
                 }))
@@ -508,7 +517,8 @@ var dotcontainers = graph_containers
                 })
                 .append("path")
                 //       .attr("class", function(d){ return "areas " + d.key})
-                .attr("d", (d) => gradient_area(d.values));
+                .attr("d", (d) => gradient_area(d.values))
+                .attr("class", "seperators");
 
 
             // setting both to go from where they are at to the average line
@@ -526,95 +536,92 @@ var dotcontainers = graph_containers
                     }))
                 .enter()
                 .append("path")
-                .attr("d", (d) => gap_area(d.values));
+                .attr("d", (d) => gap_area(d.values))
+                .attr("class", "gap_area");
 
 
-// add in new lines
+            // add in new lines
 
-    graph_containers
-        .selectAll(".linecontainer")
-        .data((d) => d.values)
-        .enter()
-        .append("g")
-        .attr("class", function (d) {
-            return "linecontainer linescontainer" + d.key
-        })
-        .append("path")
-        .attr("d", (d) => lines(d.values))
-        .attr("class", function (d) {
-            return "lines line" + d.key
-        })
-        .attr("stroke", function (d) {
-            return race_color(d.key)
-        });
+            graph_containers
+                .selectAll(".linecontainer")
+                .data((d) => d.values)
+                .enter()
+                .append("g")
+                .attr("class", function (d) {
+                    return "linecontainer linescontainer" + d.key
+                })
+                .append("path")
+                .attr("d", (d) => lines(d.values))
+                .attr("class", function (d) {
+                    return "lines line" + d.key
+                })
+                .attr("stroke", function (d) {
+                    return race_color(d.key)
+                });
 
 
-    // Add in dots
+            // Add in dots
 
-var dotcontainers = graph_containers
-        .selectAll(".dotcontainer")
-        .data((d) => d.values)
-        .enter()
-        .append("g")
-        .attr("class", function (d) {
-            return "dotcontainer dots" + d.key
-        });
+            var dotcontainers = graph_containers
+                .selectAll(".dotcontainer")
+                .data((d) => d.values)
+                .enter()
+                .append("g")
+                .attr("class", function (d) {
+                    return "dotcontainer dots" + d.key
+                });
 
-        dotcontainers.selectAll(".dots")
-        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
-        .enter()
-        .append("circle")
-        .attr("cx", function (d) {
-            return xScale(+d.grade);
-        })
-        .attr("cy", function (d) {
-            return yScale(+d.pass_rate);
-        })
-        .attr("r", 12)
-        .style("fill", function (d) {
-            return race_color(d.race)
-        }).attr("class", "dots")
-    
-    
-//Grades SCale
-    graph_containers.append("g")
-        .attr("class", "axis")
-        .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d,i) {
-		return xdata[i];
-	}).tickSize(25))
-        .attr("transform", "translate(" + 0 + "," + (height - 35) + ")");
-    //    
-   
+            dotcontainers.selectAll(".dots")
+                .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return xScale(+d.grade);
+                })
+                .attr("cy", doty)
+                .attr("r", 12)
+                .style("fill", function (d) {
+                    return race_color(d.race)
+                }).attr("class", "dots")
+
+
+            //Grades SCale
+            graph_containers.append("g")
+                .attr("class", "axis")
+                .call(d3.axisBottom().scale(xScale).tickValues([3, 4, 5, 6, 7, 8]).tickFormat(function (d, i) {
+                    return xdata[i];
+                }).tickSize(25))
+                .attr("transform", "translate(" + 0 + "," + (height - 35) + ")");
+            //    
+
 
 
             // Add Gridlines
 
-        
-  // Add Line Labels to the New ones 
-        graph_containers.selectAll(".startlabels")
-        .data( (d) => d.values)
-        .enter()
-        .append("text")
-        .attr("class", "startlabels")
-        .text((d) => Math.round(d.values[[0]].pass_rate) + "%")
-        .attr("x", xScale(2.9))
-        .attr("y", (d) => yScale(d.values[[0]].pass_rate))
-        
-        
-        // hover dot labels
-  dotcontainers.selectAll(".hovertext")
-        .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
-          .enter()
-          .append("text")
-          .attr("class", "hovertext")
-          .text((d) => Math.round(d.pass_rate) + "%")
-          .attr("x", function (d) {
-            return xScale(+d.grade);
-        })
-        .attr("y", function (d) {
-            return yScale(+d.pass_rate) - 10;
-        });
-    
+
+            // Add Line Labels to the New ones 
+            graph_containers.selectAll(".startlabels")
+                .data((d) => d.values)
+                .enter()
+                .append("text")
+                .attr("class", "startlabels")
+                .text(start_label_text)
+                .attr("x", xScale(2.9))
+                .attr("y", start_labely)
+
+
+            // hover dot labels
+            dotcontainers.selectAll(".hovertext")
+                .data((d) => d.values.filter(q => !isNaN(q.pass_rate)))
+                .enter()
+                .append("text")
+                .attr("class", "hovertext")
+                .text((d) => Math.round(d.pass_rate) + "%")
+                .attr("x", function (d) {
+                    return xScale(+d.grade);
+                })
+                .attr("y", doty);
+
 
             cohort_svg
                 .append("text")
@@ -625,15 +632,227 @@ var dotcontainers = graph_containers
 
         });
 
-    
+
+    ////////////////////////////////////////
+    // Normalize the charts
+
+
+    $('#normalize').change(norm);
+
+    function norm() {
+
+        console.log("changed");
+
+        if ($("#normalize")[[0]].checked == true) {
+
+            console.log("on");
+
+
+            yScale = d3.scaleLinear().domain([-40, 30]).range([height, 0])
+
+            // Create the path clippings to divide the positive from the negative gradient
+            gradient_area = d3.area()
+                .defined(d => !isNaN(d.pass_rate))
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y0(function (d) {
+                    return yScale(0);
+                })
+                .y1(function (d) {
+                    return yScale(30);
+                }).curve(d3.curveMonotoneX);
+
+
+            // create the path clippings to define the race difference areas. 
+            gap_area = d3.area()
+                .defined(d => !isNaN(d.pass_rate))
+
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y0(function (d) {
+
+                    return yScale(+d.diff);
+                })
+                .y1(function (d) {
+                    return yScale(0);
+                }).curve(d3.curveMonotoneX);
+
+
+            d3.selectAll(".seperators")
+                .transition().duration(1000)
+                .attr("d", (d) => gradient_area(d.values))
+
+
+            d3.selectAll(".gap_area")
+                .transition().duration(1000)
+                .attr("d", (d) => gap_area(d.values))
+                .attr("class", "gap_area");
+
+
+            // add in new lines
+
+            lines = d3.line()
+                .defined(d => !isNaN(d.pass_rate))
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y(function (d) {
+                    return yScale(+d.diff);
+                })
+                .curve(d3.curveMonotoneX);
+
+
+
+            d3.selectAll(".lines")
+                .transition().duration(1000)
+
+                .attr("d", (d) => lines(d.values))
+
+
+            doty = function (d) {
+                return yScale(+d.diff);
+            }
+
+
+            d3.selectAll(".dots")
+                .transition().duration(1000)
+                .attr("cy", doty)
+
+            start_labely = function (d) {
+                return yScale(d.values[[0]].diff)
+            };
+            start_label_text = function (d) {
+                return Math.round(d.values[[0]].diff) + "%"
+            }
+
+            d3.selectAll(".startlabels")
+                .transition()
+                .duration(1000)
+                .text(start_label_text)
+                .attr("y", start_labely)
+
+
+            d3.selectAll(".hovertext")
+                .transition()
+                .duration(1000)
+                .attr("y", doty)
+
+
+        } else {
+
+
+            console.log("off");
+
+
+            yScale = d3.scaleLinear().domain([40, 100]).range([height, 0])
+
+            // Create the path clippings to divide the positive from the negative gradient
+            gradient_area = d3.area()
+                .defined(d => !isNaN(d.pass_rate))
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y0(function (d) {
+                    return yScale(100);
+                })
+                .y1(function (d) {
+                    return yScale(+d.pass_rate);
+                }).curve(d3.curveMonotoneX);
+
+
+            // create the path clippings to define the race difference areas. 
+
+            // create the path clippings to define the race difference areas. 
+            gap_area = d3.area()
+                .defined(d => !isNaN(d.pass_rate))
+
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y0(function (d) {
+                    return yScale(+d.pass_rate);
+                })
+                .y1(function (d) {
+                    return yScale(+d.average);
+                }).curve(d3.curveMonotoneX);
+
+
+            d3.selectAll(".seperators")
+                .transition().duration(500)
+                .attr("d", (d) => gradient_area(d.values))
+
+
+            d3.selectAll(".gap_area")
+                .transition().duration(500)
+                .attr("d", (d) => gap_area(d.values))
+                .attr("class", "gap_area");
+
+
+            // add in new lines
+
+            lines = d3.line()
+                .defined(d => !isNaN(d.pass_rate))
+                .x(function (d) {
+                    return xScale(+d.grade);
+                })
+                .y(function (d) {
+                    return yScale(+d.pass_rate);
+                })
+                .curve(d3.curveMonotoneX);
+
+
+
+            d3.selectAll(".lines")
+                .transition().duration(500)
+
+                .attr("d", (d) => lines(d.values))
+
+
+            doty = function (d) {
+                return yScale(+d.pass_rate);
+            }
+
+            d3.selectAll(".dots")
+                .transition().duration(500)
+                .attr("cy", doty)
+
+            start_labely = function (d) {
+                return yScale(d.values[[0]].pass_rate)
+            };
+            start_label_text = function (d) {
+                return Math.round(d.values[[0]].pass_rate) + "%"
+            }
+
+            d3.selectAll(".startlabels")
+                .transition()
+                .duration(500)
+                .text(start_label_text)
+                .attr("y", start_labely)
+
+
+            d3.selectAll(".hovertext")
+                .transition()
+                .duration(1000)
+                .attr("y", doty)
 
 
 
 
+        }
+
+    };
 
 
 
 };
+
+
+
+
+
+
 
 var number_scale;
 

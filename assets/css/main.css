@@ -209,3 +209,7 @@ pointer-events:none
     opacity: 1;
   cursor: pointer;
 }
+
+
+  .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 10rem; }
+  .toggle.ios .toggle-handle { border-radius: 10rem; }
