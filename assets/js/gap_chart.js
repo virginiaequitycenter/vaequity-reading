@@ -347,18 +347,41 @@ function draw_viz(data) {
         .attr("y", doty);
 
 
+    ///////////////////////////////////////////
+
     // create checkbox interfaces
+
+    console.log(d3.nest().key((d) => d.values[[0]].values[[0]].values[[0]].region).entries(data))
+
+    var region_nested = d3.nest().key((d) => d.values[[0]].values[[0]].values[[0]].region).entries(data);
+
 
     var checkboxcontainer = d3.select("#checkboxes");
 
-    var checkboxdivs = checkboxcontainer.selectAll("checkbox")
-        .data(data)
+    var checkboxgroups = checkboxcontainer
+        .selectAll(".checkboxgroup")
+        .data(region_nested)
+        .enter()
+        .append("div")
+        .classed("checkboxgroup", true)
+
+    checkboxgroups
+        .append("div")
+        .classed("grouptitlediv", true)
+        .append("h3")
+        .text(d => d.key)
+        .classed("checkboxgrouptitle", true)
+
+
+    var checkboxdivs = checkboxgroups.selectAll("checkbox")
+        .data((d) => d.values)
         .enter()
         .append("div")
         .classed("checkdiv", true)
 
     // add the inputs
-    checkboxdivs.append("input")
+    checkboxdivs
+        .append("input")
         .attr("type", "checkbox")
         .attr("class", function (d) {
             return d.key + "_checkbox checkbox"
@@ -386,7 +409,7 @@ function draw_viz(data) {
         })
         .text(function (d) {
             return " " + d.values[0].values[0].values[0].division_name
-        })
+        }).attr("class", "checkboxlabels")
 
     // only select 6
     $('input[type=checkbox]').on('change', function (e) {
@@ -679,13 +702,14 @@ function draw_viz(data) {
                     return yScale(0);
                 }).curve(d3.curveMonotoneX);
 
+            var graph_area = d3.select("#graph-container");
 
-            d3.selectAll(".seperators")
+            graph_area.selectAll(".seperators")
                 .transition().duration(1000)
                 .attr("d", (d) => gradient_area(d.values))
 
 
-            d3.selectAll(".gap_area")
+            graph_area.selectAll(".gap_area")
                 .transition().duration(1000)
                 .attr("d", (d) => gap_area(d.values))
                 .attr("class", "gap_area");
@@ -705,7 +729,7 @@ function draw_viz(data) {
 
 
 
-            d3.selectAll(".lines")
+            graph_area.selectAll(".lines")
                 .transition().duration(1000)
 
                 .attr("d", (d) => lines(d.values))
@@ -716,7 +740,7 @@ function draw_viz(data) {
             }
 
 
-            d3.selectAll(".dots")
+            graph_area.selectAll(".dots")
                 .transition().duration(1000)
                 .attr("cy", doty)
 
@@ -727,14 +751,14 @@ function draw_viz(data) {
                 return Math.round(d.values[[0]].diff) + "%"
             }
 
-            d3.selectAll(".startlabels")
+            graph_area.selectAll(".startlabels")
                 .transition()
                 .duration(1000)
                 .text(start_label_text)
                 .attr("y", start_labely)
 
 
-            d3.selectAll(".hovertext")
+            graph_area.selectAll(".hovertext")
                 .transition()
                 .duration(1000)
                 .attr("y", doty)
@@ -742,6 +766,7 @@ function draw_viz(data) {
 
         } else {
 
+            var graph_area = d3.select("#graph-container");
 
             console.log("off");
 
@@ -779,12 +804,12 @@ function draw_viz(data) {
                 }).curve(d3.curveMonotoneX);
 
 
-            d3.selectAll(".seperators")
+            graph_area.selectAll(".seperators")
                 .transition().duration(500)
                 .attr("d", (d) => gradient_area(d.values))
 
 
-            d3.selectAll(".gap_area")
+            graph_area.selectAll(".gap_area")
                 .transition().duration(500)
                 .attr("d", (d) => gap_area(d.values))
                 .attr("class", "gap_area");
@@ -804,7 +829,7 @@ function draw_viz(data) {
 
 
 
-            d3.selectAll(".lines")
+            graph_area.selectAll(".lines")
                 .transition().duration(500)
 
                 .attr("d", (d) => lines(d.values))
@@ -814,7 +839,7 @@ function draw_viz(data) {
                 return yScale(+d.pass_rate);
             }
 
-            d3.selectAll(".dots")
+            graph_area.selectAll(".dots")
                 .transition().duration(500)
                 .attr("cy", doty)
 
@@ -825,14 +850,14 @@ function draw_viz(data) {
                 return Math.round(d.values[[0]].pass_rate) + "%"
             }
 
-            d3.selectAll(".startlabels")
+            graph_area.selectAll(".startlabels")
                 .transition()
                 .duration(500)
                 .text(start_label_text)
                 .attr("y", start_labely)
 
 
-            d3.selectAll(".hovertext")
+            graph_area.selectAll(".hovertext")
                 .transition()
                 .duration(1000)
                 .attr("y", doty)
