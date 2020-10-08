@@ -71,7 +71,7 @@ function draw_viz(data) {
 
     // Create Color Scales
     number_scale = [];
-    var N = 12
+    var N = 13
 
     for (var i = 0; i <= N; i++) {
         number_scale.push(i);
@@ -135,7 +135,7 @@ function draw_viz(data) {
         .classed("positive_rects backrect", true);
 
     var xScale = d3.scaleLinear().domain([2.5, 8.5]).range([0, width]);
-    var yScale = d3.scaleLinear().domain([40, 100]).range([height, 0])
+    var yScale = d3.scaleLinear().domain([35, 100]).range([height, 0])
 
     // Create the path clippings to divide the positive from the negative gradient
     var gradient_area = d3.area()
@@ -671,7 +671,7 @@ function draw_viz(data) {
             console.log("on");
 
 
-            yScale = d3.scaleLinear().domain([-40, 30]).range([height, 0])
+            yScale = d3.scaleLinear().domain([-35, 30]).range([height, 0])
 
             // Create the path clippings to divide the positive from the negative gradient
             gradient_area = d3.area()
@@ -771,7 +771,7 @@ function draw_viz(data) {
             console.log("off");
 
 
-            yScale = d3.scaleLinear().domain([40, 100]).range([height, 0])
+            yScale = d3.scaleLinear().domain([35, 100]).range([height, 0])
 
             // Create the path clippings to divide the positive from the negative gradient
             gradient_area = d3.area()

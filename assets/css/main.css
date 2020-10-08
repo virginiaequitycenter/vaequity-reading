@@ -13,8 +13,9 @@ body {
 
 header h1 {
     text-align:center;
-    font-weight: 100;
+    font-weight: 800;
     font-size: 48px;
+    
 
 }
 
@@ -25,6 +26,7 @@ main h3 {
     margin-top: .5em;
 
     margin-bottom: .5em;
+/*    font-weight: 800;*/
 }
 
 header {
@@ -128,7 +130,7 @@ alignment-baseline: middle;
 /*Check Boxes*/
 #checkboxes {
     background-color: white;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
     
@@ -136,8 +138,8 @@ alignment-baseline: middle;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 /*    grid-auto-flow: dense;*/
     
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 30px;
+    margin-right: 30px;
     padding:5px;
     padding-top:10px;
     padding-left: 10px;
@@ -161,12 +163,11 @@ alignment-baseline: middle;
 }
 
 .checkboxgrouptitle {
-    font-weight: 500;
+    font-weight: 800;
     text-align: left;
     
 }
 
-.
 
 .checkboxlabels {
     font-weight: 300;
@@ -251,4 +252,10 @@ pointer-events:none
 .relative-image {
     position:relative;
     width:100%;
+}
+
+main p {
+    text-align: left;
+    font-weight: 300;
+    
 }
