@@ -42,6 +42,16 @@ header {
     
 }
 
+.titlecol {
+     background-color:none;
+/*    border: 2px solid white;*/
+    padding:0px;
+    margin:0px;
+    min-width: 20px;
+    flex-grow: .2;
+        flex-basis: 0;
+}
+
 .column {
     background-color:none;
 /*    border: 2px solid white;*/
@@ -112,7 +122,13 @@ header {
 .startlabels {
  text-anchor: end;
  alignment-baseline: middle;
-    font-size: 35px;
+    font-size: 55px;
+}
+
+.level_labels {
+ text-anchor: start;
+ alignment-baseline: middle;
+    font-size: 55px;
 }
 
 .yeartext {
