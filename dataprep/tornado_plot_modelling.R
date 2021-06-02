@@ -91,11 +91,13 @@ race_pred <- race_data_sim_byyear_models %>%
   mutate(pred = purrr::map(model, ~ggpredict(.x, terms = c("level", "division_name"), type = "random"))
          )
 
-?ggpredict
+ggpredict
 test_out <-
 ggpredict(race_data_sim_byyear_models$model[[6]], terms = c("level", "division_name"), type = "random")
 
 race_data_sim_byyear_models$data
+
+save(race_data_sim_byyear_models %>% select(-data), file = "data/race_model.Rdata")
   
 # SES Simulation ----------------------------------------------------------
 
