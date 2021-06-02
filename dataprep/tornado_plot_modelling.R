@@ -97,7 +97,8 @@ ggpredict(race_data_sim_byyear_models$model[[6]], terms = c("level", "division_n
 
 race_data_sim_byyear_models$data
 
-save(race_data_sim_byyear_models %>% select(-data), file = "data/race_model.Rdata")
+race_data_sim_byyear_models %>% select(-data) %>%
+save(. , file = "data/race_model.Rdata")
   
 # SES Simulation ----------------------------------------------------------
 
