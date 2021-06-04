@@ -10,6 +10,11 @@ library(ggeffects)
 # Read in Data ------------------------------------------------------------
 complete_data <- read_csv("data/complete_data.csv")
 
+division_list <-
+complete_data %>%
+  select(division_name, division_use) %>%
+  unique()
+
 unique(complete_data$demographic)
 # Split into subgroups
 
@@ -67,6 +72,7 @@ write_csv(race_data_sim, file = "data/race_data_sim.csv")
 
 
 # Run the Modelling
+#race_data_sim <- read_csv("data/race_data_sim.csv")
 
 # create nested data frame
 race_data_sim_byyear <- race_data_sim %>% 
@@ -85,20 +91,43 @@ yearly_model <- function(df) {
 race_data_sim_byyear_models <- race_data_sim_byyear %>% 
   mutate(model = map(data, yearly_model))
 
+# predict out 
+race_predicted <- 
+race_data_sim_byyear_models %>%
+  mutate(
+    coefficients = map(model, ~coef(.x)$division_name %>%
+                         data.frame() %>%
+                         rownames_to_column() %>%
+                         tibble() %>%
+                         rename(
+                           division_name = 1,
+                           intercept = 2,
+                           level = 3
+                         ) %>%
+                         mutate(
+                           black = exp(intercept)/(1 + exp(intercept)),
+                           white = exp(intercept + level)/(1 + exp(intercept + level))
+                         )
+                       )
+  ) %>%
+  select(-data, - model) %>%
+  unnest(coefficients)
 
-# predict out
-race_pred <- race_data_sim_byyear_models %>% 
-  mutate(pred = purrr::map(model, ~ggpredict(.x, terms = c("level", "division_name"), type = "random"))
-         )
+write_csv(race_predicted, file = "data/race_predicted.csv")
 
-ggpredict
-test_out <-
-ggpredict(race_data_sim_byyear_models$model[[6]], terms = c("level", "division_name"), type = "random")
+race_predicted %>%
+  select(test_year, division_name, black, white) %>%
+  gather(
+    level, rate, -test_year, -division_name
+  ) %>%
+  mutate(demographic = "Race") %>%
+  write_csv(., file = "../assets/data/tornado.csv")
 
-race_data_sim_byyear_models$data
 
-race_data_sim_byyear_models %>% select(-data) %>%
-save(. , file = "data/race_model.Rdata")
+# race_models <-
+# race_data_sim_byyear_models %>% select(-data) 
+# save(race_models , file = "data/race_model.Rdata")
+#load("data/race_model.Rdata")
   
 # SES Simulation ----------------------------------------------------------
 
@@ -135,14 +164,80 @@ ses_data_sim <-
 
 write_csv(ses_data_sim, file = "data/ses_data_sim.csv")
 
+ses_data_sim <- read_csv("data/ses_data_sim.csv")
+
+# create nested data frame
+ses_data_sim_byyear <- ses_data_sim %>% 
+  group_by(test_year) %>% 
+  nest()
+
 # estimate models
 ses_data_sim_byyear_models <- ses_data_sim_byyear %>% 
   mutate(model = map(data, yearly_model))
 
-# predict out
-ses_pred <- ses_data_sim_byyear_models %>% 
-  mutate(pred = map(model, ~ggpredict(.x, terms = c("level", "division_name"), type = "random")))
+ses_data_sim_byyear_models$model[[2]]
 
+# need to know which one is the base level and which is modelled. 
+ses_data_sim_byyear_models$model[[6]]
+
+# predict out 
+ses_predicted <- 
+  ses_data_sim_byyear_models %>%
+  mutate(
+    coefficients = map(model, ~coef(.x)$division_name %>%
+                         data.frame() %>%
+                         rownames_to_column() %>%
+                         tibble() %>%
+                         rename(
+                           division_name = 1,
+                           intercept = 2,
+                           level = 3
+                         ) %>%
+                         mutate(
+                           disadvantaged = exp(intercept)/(1 + exp(intercept)),
+                           other = exp(intercept + level)/(1 + exp(intercept + level))
+                         )
+    )
+  ) %>%
+  select(-data, - model) %>%
+  unnest(coefficients)
+
+write_csv(ses_predicted, file = "data/ses_predicted.csv")
+
+
+race_predicted %>%
+  select(test_year, division_name, black, white) %>%
+  gather(
+    level, rate, -test_year, -division_name
+  ) %>%
+  mutate(demographic = "Race")  %>%
+  bind_rows(
+    
+ses_predicted %>%
+  select(test_year, division_name, disadvantaged, other) %>%
+  gather(
+    level, rate, -test_year, -division_name
+  ) %>%
+  mutate(demographic = "Socioeconomics") 
+) %>%
+  group_by(
+    demographic, test_year, division_name
+  ) %>%
+  mutate(
+    dif = abs(rate - lag(rate)),
+    dif = case_when(
+      is.na(dif) ~ 0,
+      TRUE ~ dif
+    ),
+    dif = sum(dif),
+    max_rate = max(rate) 
+  )  %>%
+  arrange(demographic, test_year, division_name, level) %>%
+  group_by(demographic, test_year) %>%
+  arrange(desc(dif) )%>%
+  mutate(rank = ceiling((1:n())/2)   ) %>%
+  left_join(division_list) %>%
+  write_csv(., file = "../assets/data/tornado.csv")
 
 # ELL Simulation ----------------------------------------------------------
 # there is ALOT of data missing here
@@ -179,6 +274,12 @@ ell_data_sim <-
 
 write_csv(ell_data_sim, file = "data/ell_data_sim.csv")
 
+ell_data_sim <- read_csv("data/ell_data_sim.csv")
+
+# Make nested datawws
+ell_data_sim_byyear <- ell_data_sim %>% 
+  group_by(test_year) %>% 
+  nest()
 
 # estimate models
 ell_data_sim_byyear_models <- ell_data_sim_byyear %>% 

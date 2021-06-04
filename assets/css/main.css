@@ -275,3 +275,97 @@ main p {
     font-weight: 300;
     
 }
+
+
+/* Tornado plots*/
+
+/*Set up the Gridlines */
+.vert_lines {
+    stroke-width: 5;
+    stroke: grey;
+    stroke-dasharray: 20;
+}
+
+.vert_line_text {
+    font-size: 50px;
+/*          dominant-baseline:middle;*/
+    text-anchor:middle;
+
+}
+
+.legend_labels {
+    
+    dominant-baseline:middle;
+    text-anchor:left;
+        font-size: 75px;
+    fill: black;
+
+}
+
+.division_label {
+        font-size: 12px;
+        dominant-baseline:middle;
+       text-anchor:end;
+
+        opacity: 1;
+}
+
+.division_dots {
+    opacity: 1;
+/*    fill: black*/
+    
+}
+
+.lines_tornado {
+    stroke-width:15;
+    stroke: black;
+}
+
+.lines_tornado:active {
+    stroke: red;
+}
+
+
+.division_text {
+        font-size: 50px;
+        dominant-baseline:middle;  
+           text-anchor:middle;
+    opacity: 0
+
+}
+
+/*Give the grouping elements interaction on hover*/
+.division_boxes {
+    pointer-events: bounding-box;
+    opacity: 1;
+}
+
+.division_boxes:hover {
+    opacity: .9;
+    
+}
+
+/*edit the children when that hover happens*/
+
+.division_boxes:hover > .division_label {
+        font-size: 75px;
+    
+}
+
+.division_boxes:hover > .division_text {
+        opacity: 1;
+    
+}
+.division_boxes:hover > path {
+        stroke: red
+    
+}
+
+.division_boxes:hover > circle {
+        fill: red
+    
+}
+
+
+
+
