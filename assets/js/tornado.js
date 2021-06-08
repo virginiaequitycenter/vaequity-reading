@@ -1,4 +1,4 @@
-const tornado = d3.csv("../assets/data/tornado.csv");
+const tornado = d3.csv("assets/data/tornado.csv");
 var tornado_data;
 var tornado_data_filtered;
 var year_var = 2006;
