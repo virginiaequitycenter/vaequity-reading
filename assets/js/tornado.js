@@ -213,6 +213,45 @@ d3.selectAll("#minus_year")
      });
     
     
+// Tornado highlighting interactions
+   
+
+    var TagList = d3.map(tornado_data, function (d) {
+        return d.division_use;
+    }).keys();
+    
+     var addon = ["   "];
+     TagList = addon.concat(TagList);
+
+    var tagselector = d3.select(".division_filter")
+        .append("select")
+        .classed("form-control", true)
+        .classed("division_selector", true)
+        .on("change", function () {
+            d3.selectAll(".division_boxes").classed("highlighted", false);
+            d3.selectAll("#"+this.value).classed("highlighted", true);
+            console.log(this.value);
+        });
+    
+function humanize(str) {
+    var i, frags = str.split('_');
+    for (i = 0; i < frags.length; i++) {
+        frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+    }
+    return frags.join(' ');
+}
+
+    tagselector.selectAll("option")
+        .data(TagList)
+        .enter()
+        .append("option")
+        .attr("value", (d) => d)
+        .text((d) => humanize(d))
+        .classed("tagoption", true);
+    
+    
+// Update years thing.
+    
     function update_year(data, year_input) {
         
         d3.select("#year_display").text("Current Year: " + year_input);
@@ -288,6 +327,9 @@ d3.selectAll("#minus_year")
 
 
     }
+
+
+    
     
     
     

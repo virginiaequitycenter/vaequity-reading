@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="">
-    
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-    <title> Education Equity </title>
+    <title> Education Equity Summary</title>
     <!--    <link rel="icon" href="../assets/pics/eclogo.png">-->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -18,7 +18,7 @@
 
 
     <!-- My CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 
 
@@ -26,24 +26,28 @@
 
     <header>
         <div class="col-md-8" style="transform:translate(-50%, 0%); left: 50%;">
-            <h1>Reading in Virginia</h1>
+            <h1>Reading in Virginia Across Years</h1>
         </div>
     </header>
 
     <main>
+
+
+
+
+        <br>
+        <br>
         
-        
-        
-        
-        
-        
-<br>
         <h3>background</h3>
 
         <div class="page-section row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
-                <p>Virginia's public schools are responsible for the academic success of all students in the state. But many divisions may not be helping minoritized students achieve the same literacy rates as their more advantaged peers by the time they graduate 8th grade. Using data on passage rates for the <a href="https://p1pe.doe.virginia.gov/apex/f?p=152:1:10330908492500:::::"> Virginia SOL Reading test</a> from the Virginia Department of Education as a proxy for literacy, we track a cohort of students who began third grade in 2013 and finished eighth grade in 2018 and visually investigate the advantages and disadvantages students are presented in school settings.</p>
+                <p>Virginia's public schools are responsible for the academic success of all students in the state. Using data on passage rates for the <a href="https://p1pe.doe.virginia.gov/apex/f?p=152:1:10330908492500:::::"> Virginia SOL Reading test</a>.......... Explanation Explanation Explanation Explanation </p>
+                
+               <p>
+                   For more detailed grade-by-grade breakdowns of passage rates, continue to explore the data with our <a href = "details" > detail view</a>
+                </p>
 
 
             </div>
@@ -52,11 +56,13 @@
 
         </div>
 
+
+        <!--
         <br>
                 <h3>how to read this viz</h3>
 
             <div class="page-section row">
-                <!--            <div class="example-container col-md-1"> </div>-->
+                            <div class="example-container col-md-1"> </div>
 
 
                 <div class="example-container col-md-12">
@@ -67,31 +73,45 @@
 
 
             </div>
-
-<br>
-        <br>
+-->
 
 
 
-        <h3>choose divisions to compare</h3>
-<br>
-        <div id="checkboxes">
+        <div class="page-section">
+            <h2 id="year_display">Current Year: 2006</h2>
+
+            <button type="button" id="minus_year" class="btn btn-secondary">-1 Year</button>
+
+            <button type="button" id="plus_year" class="btn btn-secondary">+1 Year</button>
         </div>
         
-        <div class="page-section">
-            <button type="button" id="submitchanges" class="btn btn-secondary">update divisions</button>
-        </div>
+       <div class="page-section">
+           <h3>Select a Division to Highlight it & Track Across Years:</h3>
+               <div class="row">
+                   <div class="col-md-4"> </div>
+                   <div class="division_filter col-md-4"> </div>
+               </div>
+       </div>
 
-        <div class="page-section">
+        <br>
+
+        <br>
+        <div class="page-section row">
+
+
+            <div class="col-lg-1"> </div>
+
+            <div id="tornado-container" class="col-lg-10"> </div>
+
+            <div class="col-lg-1"> </div>
 
 
 
-        <div id="graph-container" class="container-fluid row"> </div>
         </div>
 
     </main>
 
-    <script src="assets/js/gap_chart.js"></script>
+    <script src="../assets/js/tornado.js"></script>
 
     <script>
 
@@ -100,4 +120,6 @@
 
 
 
-</body></html>
+</body>
+
+</html>

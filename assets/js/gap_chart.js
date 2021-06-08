@@ -1,4 +1,4 @@
-const education = d3.csv("assets/data/cohort_2019.csv");
+const education = d3.csv("../assets/data/cohort_2019.csv");
 var ed_data;
 var ed_data_filtered;
 
@@ -306,7 +306,9 @@ function draw_viz(data) {
 
     console.log(d3.nest().key((d) => d.values[[0]].values[[0]].values[[0]].region).entries(data))
 
-    var region_nested = d3.nest().key((d) => d.values[[0]].values[[0]].values[[0]].region).entries(data);
+    var region_nested = d3.nest().key((d) => d.values[[0]].values[[0]].values[[0]].region).entries(data)
+    .sort((a,b) => d3.ascending(a.key, b.key))
+;
 
 
     var checkboxcontainer = d3.select("#checkboxes");
@@ -373,8 +375,6 @@ function draw_viz(data) {
     });
 
     
-    
-// REWRITE THIS
     
     
     ////////////////////////////////////////

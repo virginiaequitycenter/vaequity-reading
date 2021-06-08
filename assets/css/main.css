@@ -363,6 +363,22 @@ main p {
     
 }
 
+/*Put in the highlights*/
+.highlighted > path {
+    stroke: red
+}
 
 
+.highlighted > circle {
+        fill: red
+}
 
+.highlighted > .division_label {
+        font-size: 75px;
+    
+}
+
+.highlighted > .division_text {
+        opacity: 1;
+    
+}
