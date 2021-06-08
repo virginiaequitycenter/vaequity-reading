@@ -305,7 +305,8 @@ main p {
 .division_label {
         font-size: 12px;
         dominant-baseline:middle;
-       text-anchor:end;
+/*       text-anchor:end;*/
+       text-anchor:start;
 
         opacity: 1;
 }
@@ -340,10 +341,6 @@ main p {
     opacity: 1;
 }
 
-.division_boxes:hover {
-    opacity: .9;
-    
-}
 
 /*edit the children when that hover happens*/
 

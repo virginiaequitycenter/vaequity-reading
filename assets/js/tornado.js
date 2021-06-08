@@ -20,10 +20,7 @@ function draw_tornado(data, demographic, year) {
         );
     console.log(tornado_data_filtered)
 
-    // get a list of the divisions in use
-    var key = function (d) {
-        return d.key;
-    }
+
 
     // define the graph boundaries
     var margin = {
@@ -44,8 +41,8 @@ function draw_tornado(data, demographic, year) {
         .append("svg")
         .attr("viewBox", "0 0 " + usewidth + " " + useheight)
         .attr("class", "svg-content")
-        .attr("id", "viz_svg")
-        .attr("aria-labelledby", "title")
+        .attr("id", "viz_svg");
+       
 
     var lowerX = .4;
     var yScale = d3.scaleLinear().domain([135, 1]).range([height, 0]);
@@ -84,7 +81,7 @@ var vert_lines = axes_g.selectAll(".vert_lines")
     .attr("class", "vert_line_text")
  
  
-var color_scale = d3.scaleOrdinal().domain(["black", "white"]).range(["green", "purple"]);
+var color_scale = d3.scaleOrdinal().domain(["black", "white", "disadvan"]).range(["green", "purple", "purple"]);
 var legend_g = viz_svg.append("g").attr("class", "legend").attr("transform", "translate(" + (width/2 - 150) + "," + -150 + ")")  
 
 var legend_keys = d3.map(tornado_data_filtered[0].values, (d) => d.level).keys();
@@ -93,10 +90,10 @@ legend_g.selectAll(".legend_groups")
     .data(legend_keys)
     .enter()
     .append("circle")
-    .attr("cx", function(d,i){ return i*300})
+    .attr("cx", function(g,i){ return i*300})
     .attr("cy",0 ) // 100 is where the first dot appears. 25 is the distance between dots
     .attr("r", 30)
-    .style("fill", function(d){ return color_scale(d)})
+    .style("fill", function(g){ return color_scale(g)})
     
 legend_g.selectAll("mylabels")
   .data(legend_keys)
@@ -115,6 +112,10 @@ var viz_g = viz_svg
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")  
 
 
+// get a list of the divisions in use
+    var key = function (d) {
+        return d.key;
+    }
 
 var division_boxes = viz_g.selectAll(".division_boxes")
     .data(tornado_data_filtered, key)
@@ -136,7 +137,7 @@ var division_boxes = viz_g.selectAll(".division_boxes")
     
 division_boxes.append("text")
     .attr("class", "division_label")
-    .attr("x", xScale(.49)
+    .attr("x", xScale(.98)
 //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   ) 
          )
     .attr("y", (d) => yScale(+d.values[0].rank))
@@ -239,7 +240,7 @@ d3.selectAll("#minus_year")
         // each entering division gets a name
         entering_divisions.append("text")
             .attr("class", "division_label")
-            .attr("x", xScale(.49)
+            .attr("x", xScale(.98)
                 //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   ) 
             )
             .attr("y", (d) => yScale(+d.values[0].rank))
