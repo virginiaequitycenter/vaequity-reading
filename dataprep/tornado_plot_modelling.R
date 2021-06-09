@@ -124,6 +124,8 @@ race_predicted %>%
   write_csv(., file = "../assets/data/tornado.csv")
 
 
+
+
 # race_models <-
 # race_data_sim_byyear_models %>% select(-data) 
 # save(race_models , file = "data/race_model.Rdata")
@@ -205,6 +207,11 @@ ses_predicted <-
 write_csv(ses_predicted, file = "data/ses_predicted.csv")
 
 
+
+race_predicted <- read_csv("data/race_predicted.csv")
+ses_predicted <- read_csv("data/ses_predicted.csv")
+
+
 race_predicted %>%
   select(test_year, division_name, black, white) %>%
   gather(
@@ -238,6 +245,10 @@ ses_predicted %>%
   mutate(rank = ceiling((1:n())/2)   ) %>%
   left_join(division_list) %>%
   write_csv(., file = "../assets/data/tornado.csv")
+
+
+
+
 
 # ELL Simulation ----------------------------------------------------------
 # there is ALOT of data missing here

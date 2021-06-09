@@ -345,7 +345,7 @@ main p {
 /*edit the children when that hover happens*/
 
 .division_boxes:hover > .division_label {
-        font-size: 75px;
+        font-size: 60px;
     
 }
 
@@ -374,7 +374,7 @@ main p {
 }
 
 .highlighted > .division_label {
-        font-size: 75px;
+        font-size: 60px;
     
 }
 
