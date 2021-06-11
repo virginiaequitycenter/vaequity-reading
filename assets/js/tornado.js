@@ -24,7 +24,7 @@ function draw_tornado(data, demographic, year) {
 
     // define the graph boundaries
     var margin = {
-            top: 100,
+            top: 200,
             right: 0,
             bottom: 50,
             left: 0
@@ -58,7 +58,7 @@ function draw_tornado(data, demographic, year) {
 
     var xlinescale = d3.scaleLinear().domain([0, N]).range([lowerX, 1])
 
-    var axes_g = viz_svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top / 2 + ")")
+    var axes_g = viz_svg.append("g").attr("transform", "translate(" + margin.left + "," + (margin.top - 50) + ")")
 
     var vert_lines = axes_g.selectAll(".vert_lines")
         .data(xlines)
@@ -82,7 +82,7 @@ function draw_tornado(data, demographic, year) {
 
 
     var color_scale = d3.scaleOrdinal().domain(["black", "white", "disadvantaged", "other"]).range(["green", "purple", "green", "purple"]);
-    var legend_g = viz_svg.append("g").attr("class", "legend").attr("transform", "translate(" + (width / 2 - 150) + "," + -150 + ")")
+    var legend_g = viz_svg.append("g").attr("class", "legend").attr("transform", "translate(" + (width / 2 - 150) + "," + 0 + ")")
 
     var legend_keys = d3.map(tornado_data_filtered[0].values, (d) => d.level).keys();
 
