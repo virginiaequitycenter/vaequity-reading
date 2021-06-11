@@ -195,7 +195,7 @@ function draw_tornado(data, demographic, year) {
 
     var TagList = d3.map(tornado_data, function (d) {
         return d.division_use;
-    }).keys();
+    }).keys().sort(d3.ascending);
 
     var addon = ["   "];
     TagList = addon.concat(TagList);
