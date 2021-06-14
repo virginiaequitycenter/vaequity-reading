@@ -26,6 +26,10 @@ ses_data <-
   complete_data %>%
   filter(demographic == "Socioeconomics") 
 
+eth_data <-
+  complete_data %>%
+  filter(demographic == "Ethnicity") 
+
 ell_data <-
   complete_data %>%
   filter(demographic == "English Language") 
@@ -208,6 +212,88 @@ write_csv(ses_predicted, file = "data/ses_predicted.csv")
 
 
 
+# Ethnicity Simulation ----------------------------------------------------
+
+eth_data %>%
+  mutate(missing = case_when(
+    is.na(pass_count) ~ 1,
+    TRUE ~ 0
+  )) %>%
+  group_by(test_year, level) %>%
+  summarize(missing = mean(missing)) %>%
+  spread(test_year, missing)
+
+eth_data %>%
+  filter(is.na(pass_count)) %>%
+  pull(division_name) %>%
+  unique()
+
+eth_data[is.na(eth_data)] <- 0 
+eth_data$total_count[eth_data$pass_count == 0] <- 0  # If the numerator equals zero/is not measured then set the denominator to 0 as well to not be measured (make the data point missing as opposed to having noone pass the exam)
+
+## Make the simulated data
+names(eth_data)
+
+eth_data_sim <- 
+  eth_data %>%
+  uncount(total_count) %>%
+  group_by(division_name, level, grade, pass_rate, test_year, cohort, pass_count) %>%
+  mutate(id = 1:n(),
+         pass = case_when(
+           id <= pass_count ~ 1,
+           TRUE ~ 0
+         )
+  )  
+
+# write_csv(eth_data_sim, file = "data/eth_data_sim.csv")
+
+eth_data_sim <- read_csv("data/eth_data_sim.csv")
+
+# create nested data frame
+eth_data_sim_byyear <- eth_data_sim %>% 
+  group_by(test_year) %>% 
+  nest()
+
+# estimate models
+eth_data_sim_byyear_models <- eth_data_sim_byyear %>% 
+  mutate(model = map(data, yearly_model))
+
+eth_data_sim_byyear_models$model[[2]]
+
+# need to know which one is the base level and which is modelled. 
+coef(eth_data_sim_byyear_models$model[[6]])
+
+# predict out 
+eth_predicted <- 
+  eth_data_sim_byyear_models %>%
+  mutate(
+    coefficients = map(model, ~coef(.x)$division_name %>%
+                         data.frame() %>%
+                         rownames_to_column() %>%
+                         tibble() %>%
+                         rename(
+                           division_name = 1,
+                           intercept = 2,
+                           level = 3
+                         ) %>%
+                         mutate(
+                           hispanic = exp(intercept)/(1 + exp(intercept)),
+                           white = exp(intercept + level)/(1 + exp(intercept + level))
+                         )
+    )
+  ) %>%
+  select(-data, - model) %>%
+  unnest(coefficients)
+
+write_csv(eth_predicted, file = "data/eth_predicted.csv")
+
+
+
+
+
+# put them together -------------------------------------------------------
+
+
 race_predicted <- read_csv("data/race_predicted.csv")
 ses_predicted <- read_csv("data/ses_predicted.csv")
 
@@ -227,6 +313,17 @@ ses_predicted %>%
   ) %>%
   mutate(demographic = "Socioeconomics") 
 ) %>%
+  
+  bind_rows(
+    
+    eth_predicted %>%
+      select(test_year, division_name, white, hispanic) %>%
+      gather(
+        level, rate, -test_year, -division_name
+      ) %>%
+      mutate(demographic = "Ethnicity") 
+  ) %>%
+  
   group_by(
     demographic, test_year, division_name
   ) %>%
@@ -250,6 +347,10 @@ ses_predicted %>%
 
 
 
+
+
+
+## ELL simulation may not be reasonably accurate. we will see. 
 # ELL Simulation ----------------------------------------------------------
 # there is ALOT of data missing here
 ell_data %>%

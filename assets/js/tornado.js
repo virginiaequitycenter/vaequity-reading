@@ -81,7 +81,7 @@ function draw_tornado(data, demographic, year) {
         .attr("class", "vert_line_text")
 
 
-    var color_scale = d3.scaleOrdinal().domain(["black", "white", "disadvantaged", "other"]).range(["green", "purple", "green", "purple"]);
+    var color_scale = d3.scaleOrdinal().domain(["black", "white", "disadvantaged", "other", "hispanic"]).range(["green", "purple", "green", "purple", "purple"]);
     var legend_g = viz_svg.append("g").attr("class", "legend").attr("transform", "translate(" + (width / 2 - 150) + "," + 0 + ")")
 
     var legend_keys = d3.map(tornado_data_filtered[0].values, (d) => d.level).keys();

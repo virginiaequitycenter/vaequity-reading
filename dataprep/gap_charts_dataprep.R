@@ -72,6 +72,41 @@ white_students <-
          cohort = test_year + years_from_end )  
 
 
+# Ethnicity
+hispanic_students <- 
+  read_csv("data/hispanic_students_all_divisions.csv") %>%
+  rename_with(.cols = everything(), .fn = ~str_replace_all(str_to_lower(.x),  " ", "_")) %>%
+  select(school_year, division_number, division_name, level = race, test_level, pass_count, total_count, pass_rate) %>%
+  mutate(
+    test_year = as.numeric(str_sub(school_year, 6,9)),
+    grade = as.numeric(str_sub(test_level, 7,7)),
+    demographic = "Ethnicity",
+    level = "Hispanic"
+  ) %>%
+  mutate(across(.cols = contains("count"), .fns = ~as.numeric(str_replace_all(.x, ",", "") )   ) )%>%
+  mutate(across(contains("rate"), as.numeric) ) %>%
+  mutate(max_grade = max(grade), 
+         years_from_end = max_grade - grade,
+         cohort = test_year + years_from_end )  
+
+
+
+white_students_ethnicity <- 
+  read_csv("data/white_students_all_divisions.csv") %>%
+  rename_with(.cols = everything(), .fn = ~str_replace_all(str_to_lower(.x),  " ", "_")) %>%
+  select(school_year, division_number, division_name, level = race, test_level, pass_count, total_count, pass_rate) %>%
+  mutate(
+    test_year = as.numeric(str_sub(school_year, 6,9)),
+    grade = as.numeric(str_sub(test_level, 7,7)),
+    demographic = "Ethnicity",
+    level = "White"
+  ) %>%
+  mutate(across(.cols = contains("count"), .fns = ~as.numeric(str_replace_all(.x, ",", "") )   ) )%>%
+  mutate(across(contains("rate"), as.numeric) ) %>%
+  mutate(max_grade = max(grade), 
+         years_from_end = max_grade - grade,
+         cohort = test_year + years_from_end )  
+
 # SES Advantage
 
 ses <-
@@ -154,6 +189,8 @@ complete_data <-
 black_students %>%
   bind_rows(
     white_students,
+    hispanic_students,
+    white_students_ethnicity,
     ses,
     ell
  #   overall
@@ -166,13 +203,23 @@ black_students %>%
     division_name, test_year, grade, demographic
   )  %>%
   mutate(
-    mean_rate = mean(pass_rate, na.rm = TRUE),
+    mean_rate = mean(pass_rate),
     direction = case_when(
       pass_rate >= mean_rate ~  1,
       TRUE ~ -1
-    )
+    ),
+    min_rate = min(pass_rate, na.rm = TRUE)
   ) %>%
-  left_join(averages)
+  left_join(averages) %>%
+  mutate(                   # add in the center lines to help the cut paths in the vis. 
+    average = case_when(
+      is.na(mean_rate) ~ average,
+      is.infinite(mean_rate) ~ average,
+      min_rate > average ~ mean_rate,
+      TRUE ~ average
+    )
+    
+  )
 
 complete_data %>%
   filter(is.na(region)) ## perfect, we've got them all named. 
@@ -187,11 +234,19 @@ write_csv(complete_data, "data/complete_data.csv")
 unique(complete_data$cohort)
 table(complete_data$cohort, complete_data$grade)
 
+unique(complete_data$demographic)
+str(complete_data)
 
 # cohort 2019
-
 complete_data %>%
   filter(cohort == 2019) %>%
+  mutate(
+    filter_out = case_when(
+      demographic == "English Language" & grade  >= 7 ~ 1,
+      TRUE ~ 0
+      )
+    ) %>%
+  filter(filter_out == 0) %>%
   mutate(
     demographic_use = str_replace_all(str_to_lower(demographic), " ", "_"),
     level_use = str_replace_all(str_to_lower(level), " ", "_")
