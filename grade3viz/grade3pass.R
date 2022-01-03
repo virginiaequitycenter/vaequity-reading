@@ -9,7 +9,7 @@ grade3 <- read_csv("www/thirdgrade_alllstudents.csv")
 grade3_prof <- grade3 %>% 
   clean_names() %>% 
   select(school_year, division_number, division_name, 
-         pass_proficient_rate) %>% 
+         pass_proficient_rate, total_students = total_count) %>% 
   mutate(year = str_sub(school_year, 6,10),
        # year = as.Date(year, "%Y"),
        # year = year(year),
@@ -19,9 +19,9 @@ grade3_prof <- grade3 %>%
 grade3_prof_all <- grade3 %>% 
   clean_names() %>% 
   group_by(school_year) %>% 
-  summarize(totalpass = sum(pass_proficient_count, na.rm = TRUE),
-            totalcount = sum(total_count, na.rm = TRUE)) %>% 
-  mutate(pass_proficient_rate = round((totalpass/totalcount)* 100, 1)) %>% 
+  summarize(total_pass = sum(pass_proficient_count, na.rm = TRUE),
+            total_students = sum(total_count, na.rm = TRUE)) %>% 
+  mutate(pass_proficient_rate = round((total_pass/total_students)* 100, 1)) %>% 
   mutate(year = str_sub(school_year, 6,10),
          # year = as.Date(year, "%Y"),
          # year = year(year),
@@ -39,13 +39,14 @@ target_prof <- grade3_prof %>% filter(division_name == "Highland County") # choo
 
 # plot stock
 g_prof <- grade3_prof %>% 
-  ggplot(aes(x = year, y = pass_proficient_rate)) + 
+  ggplot(aes(x = year, y = pass_proficient_rate, 
+             label = total_students)) + 
   # bigger background line reflecting state-wide rate
-  geom_line(data = grade3_prof_all, aes(x = year, y = pass_proficient_rate), 
-            color = "black", size = 2) +
+ geom_line(data = grade3_prof_all, aes(x = year, y = pass_proficient_rate),
+           color = "black", size = 2) +
   # line traces for each jurisdiction in all panels
   geom_line(aes(group = division_name),
-            size = 0.2, color = "grey70") +
+            size = 0.2, color = "grey80") +
   scale_x_continuous(name = "Year (spring)", breaks = seq(2013, 2021, 1)) +
   labs(y = "% Proficient") +
   # line trace in red for target jurisdiction 
@@ -60,12 +61,12 @@ g_prof <- grade3_prof %>%
   # annotate("text", x = 2014.74, y = 25, label = "State-wide Proficiency",
   #          size = 3) +
   theme_minimal()
-ggplotly(g_prof) %>%
+ggplotly(g_prof, tooltip = c("group", "x", "y", "label")) %>%
   layout(annotations = list(x = 2014.75, y = 25,
                             text = "State-wide Proficiency",
                             showarrow = F))
 
-  
+
 # Advanced ----
 grade3_adv <- grade3 %>% 
   clean_names() %>% 
