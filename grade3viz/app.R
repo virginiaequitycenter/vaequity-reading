@@ -33,9 +33,9 @@ grade3_prof_all <- grade3 %>%
 
 # Define UI for application 
 ui <- fluidPage(
-  tags$h2("Reading SOL Percent Proficient, 2013-2021"),
+  tags$h3("Virginia Reading SOL Percent Proficient, 2013-2021"),
   fluidRow(
-    column(12,
+    column(12, align="center",
            selectInput(inputId = "target",
                        label = "Select a School Division to highlight",
                        choices = unique(grade3_prof$division_name),
