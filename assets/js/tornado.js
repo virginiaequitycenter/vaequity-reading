@@ -1,4 +1,4 @@
-const tornado = d3.csv("assets/data/tornado.csv");
+const tornado = d3.csv("../assets/data/tornado.csv");
 var tornado_data;
 var tornado_data_filtered;
 var year_var = 2006;
@@ -146,7 +146,7 @@ function draw_tornado(data, demographic, year) {
     division_boxes.append("text")
         .attr("class", "division_label")
         .attr("x", xScale(.98)
-            //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   ) 
+            //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   )
         )
         .attr("y", (d) => yScale(+d.values[0].rank))
         .text((d) => d.values[0].division_name)
@@ -227,7 +227,7 @@ function draw_tornado(data, demographic, year) {
         .classed("tagoption", true);
 
 
-    // Update Year 
+    // Update Year
     d3.selectAll("#plus_year")
         .on("click", function () {
 
@@ -290,7 +290,7 @@ function draw_tornado(data, demographic, year) {
         entering_divisions.append("text")
             .attr("class", "division_label")
             .attr("x", xScale(.98)
-                //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   ) 
+                //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   )
             )
             .attr("y", (d) => yScale(+d.values[0].rank))
             .text((d) => d.values[0].division_name)
@@ -397,7 +397,7 @@ function draw_tornado(data, demographic, year) {
         entering_divisions.append("text")
             .attr("class", "division_label")
             .attr("x", xScale(.98)
-                //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   ) 
+                //          (d) => xScale( Math.max( +d.values[0].rate, +d.values[1].rate   )   )
             )
             .attr("y", (d) => yScale(+d.values[0].rank))
             .text((d) => d.values[0].division_name)
