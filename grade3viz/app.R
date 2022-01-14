@@ -33,7 +33,7 @@ grade3_prof_all <- grade3 %>%
 
 # Define UI for application 
 ui <- fluidPage(
-  tags$h3("Virginia Reading SOL Percent Proficient, 2013-2021"),
+  #tags$h3("Virginia Reading SOL Percent Proficient, 2013-2021"),
   fluidRow(
     column(12, align="center",
            selectInput(inputId = "target",
