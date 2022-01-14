@@ -72,7 +72,8 @@ server <- function(input, output) {
     output$traceplot <- renderPlotly({
       grade3_prof %>% 
             ggplot(aes(x = year, y = pass_proficient_rate, 
-                       label = total_students)) + 
+                       label = total_students
+                       )) + 
         # line traces for each jurisdiction in all panels
         geom_line(aes(group = division_name),
                   size = 0.2, color = "grey80") +
@@ -83,7 +84,9 @@ server <- function(input, output) {
         labs(x = "Year (spring)", y = "% Proficient",
              caption = "Data: Virginia Department of Education <br> https://www.doe.virginia.gov/statistics_reports/sol-pass-rates/index.shtml") +
         # line trace in red for target jurisdiction 
-        geom_line(data = target(), aes(y = pass_proficient_rate, text = division_name, label = total_students), color = "firebrick") +
+        geom_line(data = target(), aes(y = pass_proficient_rate, 
+                                       #text = division_name, label = total_students
+                                       ), color = "firebrick") +
         # rectangle over 2020 test
         annotate("rect", xmin = 2019.5, xmax = 2020.5, ymin = 25, ymax = 85,
                  alpha = 1, fill = "white") +

@@ -42,6 +42,16 @@ header {
     
 }
 
+<!-- adding center class -->
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+
 .titlecol {
      background-color:none;
 /*    border: 2px solid white;*/
