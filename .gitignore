@@ -5,3 +5,6 @@ dataprep/data/ses_data_sim.csv
 dataprep/data/race_model.Rdata
 *.csv
 .Rproj.user
+.DS_Store
+.Rhistory
+.Rproj
