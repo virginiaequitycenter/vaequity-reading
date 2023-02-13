@@ -3,8 +3,8 @@ dataprep/data/ell_data_sim.csv
 dataprep/data/race_data_sim.csv
 dataprep/data/ses_data_sim.csv
 dataprep/data/race_model.Rdata
-*.csv
+# *.csv
 .Rproj.user
 .DS_Store
 .Rhistory
-.Rproj
+*.Rproj
