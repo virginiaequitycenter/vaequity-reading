@@ -9,7 +9,7 @@ library(tidyverse)
 library(janitor)
 library(plotly)
 
-grade3 <- read_csv("www/thirdgrade_alllstudents.csv") 
+grade3 <- read_csv("www/2023_thirdgrade_allstudents.csv") 
 
 # generate data frames
 grade3_prof <- grade3 %>% 
@@ -80,7 +80,7 @@ server <- function(input, output) {
         # bigger background line reflecting state-wide rate
         geom_line(data = grade3_prof_all, aes(x = year, y = pass_proficient_rate), 
                   color = "black", size = 2) +
-        scale_x_continuous(breaks = seq(2013, 2021, 1)) +
+        scale_x_continuous(breaks = seq(2013, 2022, 1)) +
         labs(x = "Year (spring)", y = "% Proficient",
              caption = "Data: Virginia Department of Education <br> https://www.doe.virginia.gov/statistics_reports/sol-pass-rates/index.shtml") +
         # line trace in red for target jurisdiction 
