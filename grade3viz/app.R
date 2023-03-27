@@ -3,8 +3,6 @@
 # Last Updated: 2023-03-27
 # Last Deployed: 2023-03-27 
 
-
-
 library(shiny)
 library(tidyverse)
 library(janitor)
@@ -12,9 +10,6 @@ library(plotly)
 
 grade3read <- read_csv("www/2023_thirdgrade_allstudents.csv") 
 grade3math <- read_csv("www/math_thirdgrade_allstudents.csv") 
-
-# merge tables
-grade3all <- rbind(grade3, grade3math)
 
 # generate data frames
 grade3read_prof <- grade3read %>% 
