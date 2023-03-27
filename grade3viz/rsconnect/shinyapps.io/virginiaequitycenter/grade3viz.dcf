@@ -1,0 +1,14 @@
+name: grade3viz
+title: grade3viz
+username:
+account: virginiaequitycenter
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6592638
+bundleId: 7014856
+url: https://virginiaequitycenter.shinyapps.io/grade3viz/
+when: 1679942565.70846
+lastSyncTime: 1679942565.70846
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: deploy.R|grade3pass.R|math_app.R|math_gradep3pass.R|reading_app.R|www/thirdgrade_alllstudents.csv
