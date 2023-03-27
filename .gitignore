@@ -3,6 +3,16 @@ dataprep/data/ell_data_sim.csv
 dataprep/data/race_data_sim.csv
 dataprep/data/ses_data_sim.csv
 dataprep/data/race_model.Rdata
+dataprep/data/2023_ell_data_sim.csv
+dataprep/data/2023_eth_data_sim.csv
+dataprep/data/2023_eth_predicted.csv
+dataprep/data/2023_predicted_models.Rdata
+dataprep/data/2023_race_data_sim.csv
+dataprep/data/2023_race_model.Rdata
+dataprep/data/2023_race_predicted.csv
+dataprep/data/2023_ses_data_sim.csv
+dataprep/data/2023_ses_predicted.csv
+dataprep/math_data/
 # *.csv
 .Rproj.user
 .DS_Store
