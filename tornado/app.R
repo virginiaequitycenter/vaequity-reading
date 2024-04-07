@@ -6,6 +6,8 @@ library(magrittr)
 
 # 1 Get data ---
 
+tornado <- read_csv("final_reading_tornado.csv")
+
 # UI ----
 # Define UI for application that creates the tornado visualization 
 ui <- page_fillable(
@@ -45,12 +47,11 @@ server <- function(input, output) {
 
         # draw the plot with the specified demographics and year 
       tornado %>% 
-        filter(demographic == input$demo, test_year == input$year)%>% 
-        pivot_wider(names_from = level, values_from = rate) %>%
-        ggplot(aes(group = fct_reorder(division_name, desc(rank)))) +
-        geom_segment(aes(y = fct_reorder(division_name, desc(rank)), yend = fct_reorder(division_name, desc(rank)), x = black, xend = white), color = "grey") +
-        geom_point(aes(y = fct_reorder(division_name, desc(rank)), x=black), color = 'blue', size = 2) +
-        geom_point(aes(y = fct_reorder(division_name, desc(rank)), x=white), color = 'yellow', size = 2) +
+        filter(demographic == input$demo, test_year == input$year) %>% 
+        mutate(division_name = fct_reorder(division_name, desc(rank))) %>%
+        ggplot(aes(y = division_name, x = rate, group = division_name, color = level)) +
+        geom_path(color = "grey") +
+        geom_point() +
         labs(x ="", y = "School Division") +  
         theme_classic() +
         theme(axis.text.y = element_text(size = 2))
