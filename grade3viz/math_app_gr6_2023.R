@@ -14,9 +14,11 @@ library(plotly)
 library(reactable)
 
 math <- read_csv("2005_2023_math_all_students_all_divisions.csv")
+reading <- read_csv("2005_2023_reading_all_students_all_divisions.csv")
+
 
 ##############################################################
-# Data Wrangling                              
+# Data Wrangling - Math                              
 ##############################################################
 
 colnames(math) <- c("school_year", "division_number","division_name","subject",
@@ -64,6 +66,54 @@ math_avg <- math_avg %>% add_column(division_name="Virginia State")
 math_tbl <- merge(math_tbl,math_avg, all.x = TRUE, all.y=TRUE)
 
 ##############################################################
+# Data Wrangling - Reading                        
+##############################################################
+
+colnames(reading) <- c("school_year", "division_number","division_name","subject",
+                    "test_level", "test_source", "test", "pass_advanced_count",
+                    "pass_proficient_count","fail_count","pass_count","total_count",
+                    "pass_advanced_rate","pass_proficient_rate","fail_rate",
+                    "pass_rate","avg_sol_scaled")
+
+reading <- reading %>% mutate_at(c(8:17), as.numeric)
+
+### All Pass Rates by School District and Year
+
+read_prof <- reading %>% 
+  clean_names() %>% 
+  filter(test_level=="Grade 3") %>% 
+  select(school_year, division_number, division_name, 
+         pass_rate,pass_proficient_rate, total_students = total_count) %>% 
+  mutate(year = str_sub(school_year, 6,10),
+         year = as.integer(year))
+
+### Mean Pass Rates of all VA School Districts by Year
+
+grade3_prof_all <- reading %>% 
+  clean_names() %>%
+  filter(test_level=="Grade 3") %>% 
+  group_by(school_year) %>% 
+  summarize(total_pass = sum(pass_count, na.rm = TRUE),
+            total_students = sum(total_count, na.rm = TRUE),
+            division_name) %>% 
+  mutate(pass_rate = round((total_pass/total_students)* 100, 1)) %>% 
+  mutate(year = str_sub(school_year, 6,10),
+         year = as.integer(year))
+
+### Making Visual Table
+
+read_tbl <- read_prof %>% select(c("division_name","pass_rate","year"))
+read_tbl <- read_tbl %>% pivot_wider(names_from=year,values_from=pass_rate)
+
+read_avg <- grade3_prof_all %>% group_by(year) %>% summarise(va_pass_rate=mean(pass_rate))
+read_avg <- t(read_avg)
+read_avg <- read_avg %>% row_to_names(1)
+read_avg <- as.data.frame(read_avg)
+read_avg <- read_avg %>% add_column(division_name="Virginia State")
+
+read_tbl <- merge(read_tbl,read_avg, all.x = TRUE, all.y=TRUE)
+
+##############################################################
 # Define UI for Application                            
 ##############################################################
 
@@ -84,11 +134,14 @@ ui <- fluidPage(
     column(12,
            
   
-    # Line plot
+    # Line plot - Math
     plotlyOutput("traceplot"),
     
-    #Table
-    reactableOutput("table")
+    #Table - Math
+    reactableOutput("table"),
+    
+    # Line plot - Reading
+    plotlyOutput("traceplot2")
     
     )),
   
@@ -104,11 +157,14 @@ server <- function(input, output) {
 ### Calling in the input from the user
    target <- reactive({
         d1 <- math_prof %>% filter(division_name == input$target)})
+   
+   target2 <- reactive({
+     d1 <- read_prof %>% filter(division_name == input$target)})
 
    
-### Creating Plotly for Line Chart
+### Creating Plotly for Line Chart - Math
     output$traceplot <- renderPlotly({
-      g_prof <- 
+      g_prof_math <- 
         ggplot(data=math_prof, aes(x = year, y = pass_rate,label = total_students)) + 
         geom_line(data=math_prof, aes(group = division_name,
                                       text=paste0("Division: ",division_name,"\nYear: ",year,
@@ -134,7 +190,7 @@ server <- function(input, output) {
                  color = "black", size = 2) +
         theme_minimal()
       
-      ggplotly(g_prof, tooltip = "text" ) %>%
+      ggplotly(g_prof_math, tooltip = "text" ) %>%
         layout(annotations = list(x = 2009, y = 18.5,
                                   text = "State-wide Proficiency",
                                   showarrow = F))
@@ -143,9 +199,45 @@ server <- function(input, output) {
     
 ### Creating Reactable for Table
 
-    output$table <- renderReactable({
-      reactable(math_tbl)
+    #output$table <- renderReactable({
+     # reactable(math_tbl)
+    #})
+    
+### Creating Plotly for Line Chart - Reading
+    output$traceplot2 <- renderPlotly({
+      g_prof_read <- 
+        ggplot(data=read_prof, aes(x = year, y = pass_rate,label = total_students)) + 
+        geom_line(data=read_prof, aes(group = division_name,
+                                      text=paste0("Division: ",division_name,"\nYear: ",year,
+                                                  "\nSOL Pass Rate: ",pass_rate,"%\nTotal Students: ",
+                                                  total_students)),
+                  size = 0.2, color = "grey") +
+        scale_x_continuous(name = "Year (spring)", breaks = seq(2005, 2023, 1)) +
+        labs(title="3rd Grade Reading SOL Percent Passing by Year",y = "% SOL Pass Rates") +
+        geom_line(data = target2(), aes(x = year, y = pass_rate,group=division_name,label = total_students,
+                                       text=paste0("Division: ",division_name,"\nYear: ",year,
+                                                   "\nSOL Pass Rate: ",pass_rate,"%\nTotal Students: ",
+                                                   total_students)),
+                  color = "firebrick") +
+        geom_line(data = grade3_prof_all, aes(x = year, y = pass_rate,group=division_name,label = total_students,
+                                              text=paste0("All Virginia Students","\nYear: ",year,
+                                                          "\nSOL Pass Rate: ",pass_rate,"%\nTotal Students: ",
+                                                          total_students)),
+                  color = "black", size=1.5) +
+        annotate("rect", xmin = 2019.5, xmax = 2020.5, ymin = 1, ymax = 100,
+                 alpha = 1, fill = "grey90") +
+        annotate("text", x = 2020, y = 50, label = "No\n2020\nTest", size = 8, color="#8c8c8c") +
+        annotate("segment", x = 2007, xend = 2007.75, y = 18.5, yend = 18.5, 
+                 color = "black", size = 2) +
+        theme_minimal()
+      
+      ggplotly(g_prof_read, tooltip = "text" ) %>%
+        layout(annotations = list(x = 2009, y = 18.5,
+                                  text = "State-wide Proficiency",
+                                  showarrow = F))
+      
     })
+    
 }
 
 
