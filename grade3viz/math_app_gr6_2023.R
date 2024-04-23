@@ -64,6 +64,12 @@ math_avg <- as.data.frame(math_avg)
 math_avg <- math_avg %>% add_column(division_name="Virginia State")
 
 math_tbl <- merge(math_tbl,math_avg, all.x = TRUE, all.y=TRUE)
+math_tbl <- t(math_tbl)
+math_tbl <- math_tbl %>% row_to_names(1)
+math_tbl <- as.data.frame(math_tbl)
+#math_tbl <- tibble::rownames_to_column(math_tbl, "Year")
+math_tbl <- cbind(rownames(math_tbl), data.frame(math_tbl, row.names=NULL))
+colnames(math_tbl)[which(names(math_tbl) == "rownames(math_tbl)")] <- "Year"
 
 ##############################################################
 # Data Wrangling - Reading                        
@@ -112,13 +118,35 @@ read_avg <- as.data.frame(read_avg)
 read_avg <- read_avg %>% add_column(division_name="Virginia State")
 
 read_tbl <- merge(read_tbl,read_avg, all.x = TRUE, all.y=TRUE)
+read_tbl <- t(read_tbl)
+read_tbl <- read_tbl %>% row_to_names(1)
+read_tbl <- as.data.frame(read_tbl)
 
 ##############################################################
 # Define UI for Application                            
 ##############################################################
 
 ui <- fluidPage(
-  #tags$h3("Virginia Mathematics SOL Percent Proficient, 2006-2023"),
+  fluidRow(
+    column(8, align="center", offset=2,
+           tags$h2("Virginia Standards of Learning Pass Rates, 2006-2023"),
+           tags$p("The Virginia Standards of Learning (SOL) assessments establish the state's expectations for student learning at the end of each 
+                  grade in core subjects.The SOL measures the success of the student in retaining concepts from their core courses as well as the 
+                  school district's ability to impart those concepts. Students in Virginia take this exam in May from 3rd to 12th grade. Below, we 
+                  have compiled pass rates for SOL assessments in Reading and Mathematics for core years."),
+           
+           tags$p("As detailed in an Annie E. Casey report, third grade reading is a critical educational milestone marking a transition from 
+                  `learning to read` to `reading to learn` and low proficiency by the end of third grade has a detrimental impact on a child's future.
+                  As such, SOL scores in third grade are of particular importance for educators and administrators. For this reason, we have provided 
+                  Reading SOL pass rates for the third grade across Virginia school districts from 2006 to 2023 below. For information on other grades,
+                  data can be collected from the Virginia Department of Education's website."),
+           
+           tags$p("After the 6th grade, students are placed into different math classes in accordance with their retention of previous years' concepts
+                  as understood through grades and SOL scores. As such, 6th grade SOL scores have particular relevance to the educational future of Virginia's
+                  students. For this reason, we have provided Mathematics SOL pass rates for the sixth grade across Virginia school districts from 2006 to 2023 below.
+                  For information on other grades,data can be collected from the Virginia Department of Education's website. "),
+                  )),
+  
   fluidRow(
     column(12, align="center",
            selectInput(inputId = "target",
@@ -126,22 +154,20 @@ ui <- fluidPage(
                        choices = unique(math_prof$division_name),
                        selected = NULL),
            tags$p("Hover over a line to see the division, year, pass rate, and number of students taking SOL test in the given grade."),
-           
     )
   ),
   
   fluidRow(
     column(12,
-           
-  
+
+    # Line plot - Reading
+    plotlyOutput("traceplot2"),
+    
     # Line plot - Math
     plotlyOutput("traceplot"),
     
     #Table - Math
-    reactableOutput("table"),
-    
-    # Line plot - Reading
-    plotlyOutput("traceplot2")
+    reactableOutput("table")
     
     )),
   
@@ -199,9 +225,12 @@ server <- function(input, output) {
     
 ### Creating Reactable for Table
 
-    #output$table <- renderReactable({
-     # reactable(math_tbl)
-    #})
+    output$table <- renderReactable({
+      reactable(math_tbl,
+                columns = list(`Virginia.State` = colDef(show =T),
+                                Year = colDef(show=T)),
+                          defaultColDef = colDef(show = F))
+    })
     
 ### Creating Plotly for Line Chart - Reading
     output$traceplot2 <- renderPlotly({
