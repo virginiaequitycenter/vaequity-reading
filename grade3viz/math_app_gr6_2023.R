@@ -67,11 +67,13 @@ math_tbl <- merge(math_tbl,math_avg, all.x = TRUE, all.y=TRUE)
 math_tbl <- t(math_tbl)
 math_tbl <- math_tbl %>% row_to_names(1)
 math_tbl <- as.data.frame(math_tbl)
-math_tbl <- cbind(rownames(math_tbl), data.frame(math_tbl, row.names=NULL))
-colnames(math_tbl)[which(names(math_tbl) == "rownames(math_tbl)")] <- "Year"
+#math_tbl <- cbind(rownames(math_tbl), data.frame(math_tbl, row.names=NULL))
+#colnames(math_tbl)[which(names(math_tbl) == "rownames(math_tbl)")] <- "Year"
 
 math_tbl[] <- paste0(as.matrix(math_tbl), '%')
-math_tbl$Year<-gsub("%","",as.character(math_tbl$Year))
+# math_tbl$Year<-gsub("%","",as.character(math_tbl$Year))
+
+#math_tbl %>% rename_with(gsub(".", " ", names(math_tbl), fixed = TRUE))
 
 ##############################################################
 # Data Wrangling - Reading                        
@@ -169,7 +171,7 @@ ui <- fluidPage(
     plotlyOutput("traceplot"),
     
     #Table - Math
-    reactableOutput("table")
+    reactableOutput("mytable")
     
     )),
   
@@ -188,6 +190,10 @@ server <- function(input, output) {
    
    target2 <- reactive({
      d1 <- read_prof %>% filter(division_name == input$target)})
+   
+   target_table <- reactive({
+     math_tbl[c(input$target)] # this would become c(input$target, 'VA state avg') or whatever that average column is called
+   })
 
    
 ### Creating Plotly for Line Chart - Math
@@ -227,11 +233,8 @@ server <- function(input, output) {
     
 ### Creating Reactable for Table
 
-    output$table <- renderReactable({
-      reactable(math_tbl,minRows = 17,
-                columns = list(`Virginia.State` = colDef(name = "All Virginia Students", show =T),
-                                Year = colDef(name = "Year", show=T)),
-                          defaultColDef = colDef(show = F))
+    output$mytable <- renderReactable({
+      reactable(target_table()) # we needed target_table() instead of target_table
     })
     
 ### Creating Plotly for Line Chart - Reading
