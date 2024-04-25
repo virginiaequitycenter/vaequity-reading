@@ -8,6 +8,7 @@
 ##############################################################
 
 library(shiny)
+library(magrittr)
 library(tidyverse)
 library(janitor)
 library(plotly)
@@ -57,13 +58,16 @@ grade6_prof_all <- math %>%
 math_tbl <- math_prof %>% select(c("division_name","pass_rate","year"))
 math_tbl <- math_tbl %>% pivot_wider(names_from=year,values_from=pass_rate)
 
-math_avg <- grade6_prof_all %>% group_by(year) %>% summarise(va_pass_rate=mean(pass_rate))
-math_avg <- t(math_avg)
-math_avg <- math_avg %>% row_to_names(1)
-math_avg <- as.data.frame(math_avg)
-math_avg <- math_avg %>% add_column(division_name="Virginia State")
+math_tbl %<>%
+  add_row(division_name = 'VA Average', !!! colMeans(.[-1], na.rm = TRUE))
 
-math_tbl <- merge(math_tbl,math_avg, all.x = TRUE, all.y=TRUE)
+
+#math_avg <- grade6_prof_all %>% group_by(year) %>% summarise(va_pass_rate=mean(pass_rate)) 
+# math_avg <- t(math_avg)
+# math_avg <- math_avg %>% row_to_names(1)
+# math_avg <- as.data.frame(math_avg)
+# math_avg <- math_avg %>% add_column(division_name="Virginia State")
+#math_tbl <- merge(math_tbl,math_avg, all.x = TRUE, all.y=TRUE)
 math_tbl <- t(math_tbl)
 math_tbl <- math_tbl %>% row_to_names(1)
 math_tbl <- as.data.frame(math_tbl)
@@ -72,7 +76,6 @@ math_tbl <- as.data.frame(math_tbl)
 
 math_tbl[] <- paste0(as.matrix(math_tbl), '%')
 # math_tbl$Year<-gsub("%","",as.character(math_tbl$Year))
-
 #math_tbl %>% rename_with(gsub(".", " ", names(math_tbl), fixed = TRUE))
 
 ##############################################################
@@ -192,7 +195,7 @@ server <- function(input, output) {
      d1 <- read_prof %>% filter(division_name == input$target)})
    
    target_table <- reactive({
-     math_tbl[c(input$target)] # this would become c(input$target, 'VA state avg') or whatever that average column is called
+     math_tbl[c(input$target, "VA Average")] 
    })
 
    
@@ -234,7 +237,8 @@ server <- function(input, output) {
 ### Creating Reactable for Table
 
     output$mytable <- renderReactable({
-      reactable(target_table()) # we needed target_table() instead of target_table
+      reactable(target_table(), # we needed target_table() instead of target_table
+                defaultPageSize = 17) 
     })
     
 ### Creating Plotly for Line Chart - Reading
@@ -273,9 +277,6 @@ server <- function(input, output) {
     })
     
 }
-
-
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
