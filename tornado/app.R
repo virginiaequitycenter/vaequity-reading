@@ -65,12 +65,12 @@ server <- function(input, output) {
     geom_point() +
     labs(x ="", y = "School Division") +  
     theme_classic() +
-    theme(axis.text.y = element_text(size =3)) +
+    theme(axis.text.y = element_text(size = 9)) +
     labs(colour = NULL) +
     scale_x_continuous(labels = scales::percent) +
     geom_vline(xintercept = c(0.4, 0.6, 0.8), linetype = "dotted", color = "light grey") 
     
-    ggplotly(tornado_plot, tooltip = "text")
+    ggplotly(tornado_plot, height = 2000, tooltip = "text")
   })
 }
 
