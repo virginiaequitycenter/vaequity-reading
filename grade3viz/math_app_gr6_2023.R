@@ -1,10 +1,10 @@
 ##############################################################
 # Math and Reading SOL Pass Rates by County over Time- App               
-# Authors: Asha Muralidharan     
+# Authors: Asha Muralidharan and Samantha Toet  
 # GitHub: asha-ec                              
-# Last revised: 2024-04-22    
+# Last revised: 2024-04-26   
 # Summary: Pull graphs and tables together into Shiny app for
-#          publication on Equity Atlas
+#          publication onto VA SOL wesbite
 ##############################################################
 
 library(shiny)
@@ -59,7 +59,7 @@ math_tbl <- math_prof %>% select(c("division_name","pass_rate","year"))
 math_tbl <- math_tbl %>% pivot_wider(names_from=year,values_from=pass_rate)
 
 math_tbl %<>%
-  add_row(division_name = 'VA Average', !!! colMeans(.[-1], na.rm = TRUE))
+  add_row(division_name = 'VA Average', !!! round(colMeans(.[-1], na.rm = TRUE), digits = 2))
 
 
 #math_avg <- grade6_prof_all %>% group_by(year) %>% summarise(va_pass_rate=mean(pass_rate)) 
@@ -118,16 +118,19 @@ grade3_prof_all <- reading %>%
 read_tbl <- read_prof %>% select(c("division_name","pass_rate","year"))
 read_tbl <- read_tbl %>% pivot_wider(names_from=year,values_from=pass_rate)
 
-read_avg <- grade3_prof_all %>% group_by(year) %>% summarise(va_pass_rate=mean(pass_rate))
-read_avg <- t(read_avg)
-read_avg <- read_avg %>% row_to_names(1)
-read_avg <- as.data.frame(read_avg)
-read_avg <- read_avg %>% add_column(division_name="Virginia State")
+read_tbl %<>%
+  add_row(division_name = 'VA Average', !!! round(colMeans(.[-1], na.rm = TRUE), digits = 2))
+read_tbl %>% mutate(across(where(is.numeric), ~ round(., 2)))
 
-read_tbl <- merge(read_tbl,read_avg, all.x = TRUE, all.y=TRUE)
+
 read_tbl <- t(read_tbl)
 read_tbl <- read_tbl %>% row_to_names(1)
 read_tbl <- as.data.frame(read_tbl)
+
+
+read_tbl[] <- paste0(as.matrix(read_tbl), '%')
+# math_tbl$Year<-gsub("%","",as.character(math_tbl$Year))
+#math_tbl %>% rename_with(gsub(".", " ", names(math_tbl), fixed = TRUE))
 
 ##############################################################
 # Define UI for Application                            
@@ -170,6 +173,10 @@ ui <- fluidPage(
     # Line plot - Reading
     plotlyOutput("traceplot2"),
     
+    # Table - Reading
+    
+    reactableOutput("mytable_reading"),
+    
     # Line plot - Math
     plotlyOutput("traceplot"),
     
@@ -195,8 +202,11 @@ server <- function(input, output) {
      d1 <- read_prof %>% filter(division_name == input$target)})
    
    target_table <- reactive({
-     math_tbl[c(input$target, "VA Average")] 
-   })
+     math_tbl[c(input$target, "VA Average")] })
+     
+  target_table_read <- reactive({
+    read_tbl[c(input$target, "VA Average")] })
+ 
 
    
 ### Creating Plotly for Line Chart - Math
@@ -223,12 +233,12 @@ server <- function(input, output) {
         annotate("rect", xmin = 2019.5, xmax = 2020.5, ymin = 1, ymax = 100,
                  alpha = 1, fill = "grey90") +
         annotate("text", x = 2020, y = 50, label = "No\n2020\nTest", size = 8, color="#8c8c8c") +
-        annotate("segment", x = 2007, xend = 2007.75, y = 18.5, yend = 18.5, 
+        annotate("segment", x = 2007, xend = 2007.75, y = 25, yend = 25, 
                  color = "black", size = 2) +
         theme_minimal()
       
       ggplotly(g_prof_math, tooltip = "text" ) %>%
-        layout(annotations = list(x = 2009, y = 18.5,
+        layout(annotations = list(x = 2008, y = 18.5,
                                   text = "State-wide Proficiency",
                                   showarrow = F))
 
@@ -238,6 +248,11 @@ server <- function(input, output) {
 
     output$mytable <- renderReactable({
       reactable(target_table(), # we needed target_table() instead of target_table
+                defaultPageSize = 17) 
+    })
+    
+    output$mytable_reading <- renderReactable({
+      reactable(target_table_read(), # we needed target_table() instead of target_table
                 defaultPageSize = 17) 
     })
     
@@ -265,12 +280,12 @@ server <- function(input, output) {
         annotate("rect", xmin = 2019.5, xmax = 2020.5, ymin = 1, ymax = 100,
                  alpha = 1, fill = "grey90") +
         annotate("text", x = 2020, y = 50, label = "No\n2020\nTest", size = 8, color="#8c8c8c") +
-        annotate("segment", x = 2007, xend = 2007.75, y = 18.5, yend = 18.5, 
+        annotate("segment", x = 2007, xend = 2007.75, y = 25, yend = 25, 
                  color = "black", size = 2) +
         theme_minimal()
       
       ggplotly(g_prof_read, tooltip = "text" ) %>%
-        layout(annotations = list(x = 2009, y = 18.5,
+        layout(annotations = list(x = 2008, y = 18.5,
                                   text = "State-wide Proficiency",
                                   showarrow = F))
       
