@@ -13,10 +13,8 @@ tornado <- read_csv("final_reading_tornado.csv")
 ui <- page_fillable(
 
     # Application title
-    titlePanel(h1("Virginia's Reading SOL Gaps: Divisions, 2006-2023", align = "center")),
+    titlePanel(h1("SOL Reading Gaps by School Division", align = "center")),
     
-    #Subtitle
-    fluidRow(h6("Sam Powers, Michele Claibourn, and Samantha Toet", align = "center")),
     
     # Row for user selections 
     fluidRow(
@@ -55,6 +53,11 @@ server <- function(input, output) {
   })
 
   output$tornadoPlot <- renderPlotly({
+    
+    if (input$year == 2020) {
+      validate("There was no SOL testing in 2020. Please select another year. ")
+    }
+    
     
     tornado_plot <- ggplot(rvs$plt_dat, aes(y = division_name, x = rate, group = division_name, color = level,
                                             text = paste0("Divison: ", division_name, 
