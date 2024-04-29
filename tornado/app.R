@@ -19,8 +19,8 @@ tornado$level <- capFirst(tornado$level)
 ui <- page_fillable(
 
     # Application title
-    titlePanel(h1("SOL Reading Gaps by School Division", align = "center")),
-    
+    titlePanel(h1(strong("SOL Reading Gaps by School Division"), align = "center"), 
+               "SOL Reading Gaps by School Division"),
     
     # Row for user selections 
     fluidRow(
