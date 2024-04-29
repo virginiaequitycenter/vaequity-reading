@@ -8,6 +8,12 @@ library(magrittr)
 
 tornado <- read_csv("final_reading_tornado.csv")
 
+capFirst <- function(s) {
+  paste(toupper(substring(s, 1, 1)), substring(s, 2), sep = "")
+}
+
+tornado$level <- capFirst(tornado$level)
+
 # UI ----
 # Define UI for application that creates the tornado visualization 
 ui <- page_fillable(
@@ -18,19 +24,25 @@ ui <- page_fillable(
     
     # Row for user selections 
     fluidRow(
-      column(12, align = "center",
+      column(6, align = "center",
              selectInput(inputId = "demo",
                          label = "Select a Demographic to Examine",
                          choices = unique(tornado$demographic),
-                         selected = NULL),
+                         selected = NULL)),
+      column(6, align = "center",
              selectInput(inputId = "division",
-             label = "Select a Division to Highlight",
-             choices = unique(tornado$division_name),
-             selected = NULL),
-             sliderInput("year", "Select Year:", 
-                         min = min(tornado$test_year), max = max(tornado$test_year), value = 2023, step = 1, sep =''),
-      ),
+                         label = "Select a Division to Highlight",
+                         choices = unique(tornado$division_name),
+                         selected = NULL)),
     ),
+    fluidRow(
+      column(12, align = "center",
+             sliderInput("year", "Select Year:", 
+                         min = min(tornado$test_year), max = max(tornado$test_year), 
+                         value = 2023, step = 1, sep ='')
+             )
+             
+      ),
     
     # Row for plot 
     fluidRow(
@@ -70,7 +82,8 @@ server <- function(input, output) {
     theme_classic() +
     theme(axis.text.y = element_text(size = 9)) +
     labs(colour = NULL) +
-    scale_x_continuous(labels = scales::percent) +
+    scale_x_continuous(labels = scales::percent, position = "top") +
+    scale_color_manual(values=c("#E69F00", "#56B4E9")) +
     geom_vline(xintercept = c(0.4, 0.6, 0.8), linetype = "dotted", color = "light grey") 
     
     ggplotly(tornado_plot, height = 2000, tooltip = "text")
