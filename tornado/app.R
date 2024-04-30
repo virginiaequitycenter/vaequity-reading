@@ -82,9 +82,9 @@ server <- function(input, output) {
       theme_classic() +
       theme(axis.text.y = element_text(size = 9)) +
       labs(colour = NULL) +
-      scale_x_continuous(labels = scales::percent, position = "top") +
+      scale_x_continuous(labels = scales::percent) +
       scale_color_manual(values=c("#E69F00", "#56B4E9")) +
-      geom_vline(xintercept = c(0.4, 0.6, 0.8), linetype = "dotted", color = "light grey") 
+      geom_vline(xintercept = c(0.4, 0.6, 0.8), linetype = "dotted", color = "light grey")
     
     ggplotly(tornado_plot, height = 2000, tooltip = "text")
   })
