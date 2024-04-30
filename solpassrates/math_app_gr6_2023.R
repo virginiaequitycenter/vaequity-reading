@@ -2,7 +2,7 @@
 # Math and Reading SOL Pass Rates by County over Time- App               
 # Authors: Asha Muralidharan and Samantha Toet  
 # GitHub: asha-ec                              
-# Last revised: 2024-04-26   
+# Last revised: 2024-04-30
 # Summary: Pull graphs and tables together into Shiny app for
 #          publication onto VA SOL wesbite
 ##############################################################
@@ -157,25 +157,26 @@ ui <- fluidPage(
 
     # Line plot - Reading
     plotlyOutput("traceplot2"))),
+  
     
-    
-    # Table - Reading
-    fluidRow(
-      column(6,
-             
-    tags$h4("SOL Pass Rates for 3rd Grade Reading in Virginia"),
-    reactableOutput("mytable_reading"))),
     
     # Line plot - Math
     fluidRow(
       column(12,
     plotlyOutput("traceplot"))),
     
-    #Table - Math
+    #Tables
     fluidRow(
-      column(6,
-    tags$h4("SOL Pass Rates for 6th Grade Math in Virginia"),
-    reactableOutput("mytable"))),
+      column(6, align="center",
+           tags$h4("SOL Pass Rates for 3rd Grade Reading in Virginia"),
+           reactableOutput("mytable_reading")),
+      column(6, align="center",
+           tags$h4("SOL Pass Rates for 6th Grade Math in Virginia"),
+           reactableOutput("mytable"))),
+    #fluidRow(
+     # column(6,
+    #tags$h4("SOL Pass Rates for 6th Grade Math in Virginia"),
+    #reactableOutput("mytable"))),
   
     fluidRow(
       column(12,
