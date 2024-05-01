@@ -25,7 +25,7 @@
 
     <header>
         <div class="col-md-8" style="transform:translate(-50%, 0%); left: 50%;">
-            <h1>Virginia's Reading SOL Pass Rates: Division Gap Estimates</h1>
+            <h1>Virginia's SOL Test Pass Rates: Division Gap Estimates Methods</h1>
         </div>
     </header>
 
@@ -44,7 +44,7 @@
         <div class="col-md-6">
             <p>We began by pulling data from The Virginia Department of Edcuation, using the <a href="https://p1pe.doe.virginia.gov/apex/f?p=152:1:10330908492500:::::"> "Build-a-Table" functions</a>. Our initial analysis begain by pulling grade-level results to build division-level cohorts as provided in the <a href = "details" >detailed cohort view</a>. The data presented in the division cohort gaps is a direct representation of the data acquired from VDOE; for some dvisions, the data is suppressed due to small numbers of students in the relevant group within the school district.</p>
 
-            <p>The overal divisionn gap estimates, as presented in <a href = "../">the main summary figures</a>, are based on these same data, but are estimated via simulated data. The number of relevant students and the pass rates are used to create a simulated student-level data set. If a school division indicates 100 economically disadvantaged 8th graders took the reading SOL and 75 of them passed, the simulated data will contain 75 observations coded as economically disadvantaged, 8th grade, and passing and 25 observations coded as economically disadvantaged, 8th grade, and not passing. This process generates a simulated data point for each student repreesented in the summary data as provided by VDOE. We use this simulated individual data to estimate a mixed-effects logit model of pass rates in each year, with students nested in their school devision. Pass rates are modeled as a function of the relevant characteristic (race, ethnicity, economic advantage/disadvantage), allowing for both a random intercept and random coefficient. The model for each gap estimate is </p>
+            <p>The overall division gap estimates, as presented in <a href = "../">the main summary figures</a>, are based on these same data, but are estimated via simulated data. The number of relevant students and the pass rates are used to create a simulated student-level data set. If a school division indicates 100 economically disadvantaged 8th graders took the reading SOL and 75 of them passed, the simulated data will contain 75 observations coded as economically disadvantaged, 8th grade, and passing, and 25 observations coded as economically disadvantaged, 8th grade, and not passing. This process generates a simulated data point for each student represented in the summary data as provided by VDOE. We use this simulated individual data to estimate a mixed-effects logit model of pass rates in each year, with students nested in their school division. Pass rates are modeled as a function of the relevant characteristic (race, ethnicity, economically advantaged/disadvantaged), allowing for both a random intercept and random coefficient. The model for each gap estimate is </p>
 
 <p>\[ P(Y_{ij} = 1|Division_j)  = logit^{-1}(\alpha_j + x_{ij}\beta_j) \]</p>
 
