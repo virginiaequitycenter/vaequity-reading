@@ -1,0 +1,97 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# **Education Inequity in Virginia**
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+README updated: May 2024
+
+This repo hosts the R code to collect and prepare data and to build the
+Reading and Math SOL Test Outcomes website for exploring education
+inequities in Virginia.
+
+[Reading and Math SOL Test Outcomes in
+Virginia](https://virginiaequitycenter.github.io/vaequity-reading/)
+
+## Background
+
+We use Virginia Department of Education data on the Commonwealth’s
+[Standards of Learning (SOL)
+assessments](https://www.doe.virginia.gov/teaching-learning-assessment/student-assessment/virginia-sol-assessment-program)
+to visually illuminate the significant gaps in reading and math pass
+rates – between Black students as compared to their White peers, between
+economically disadvantaged students as compared to their more fortunate
+classmates, and between Hispanic students as compared to their
+non-Hispanic peers. Research shows that lack of reading and math
+proficiency have long-lasting impacts on future educational attainment,
+future earnings, and more. We seek to make this data easier to use for
+exploratory purposes, as a call to action, and hopefully, as a manner by
+which localities can track progress in eliminating these gaps, and
+working towards the goal of reading and math proficiency for ALL
+students.
+
+## Site Structure
+
+The site is deployed using Github pages, and each page has its own
+folder. If a page includes a Shiny app, the app is iframed into place.
+There are also separate folders that contain the raw data and processing
+scripts.
+
+- **[Home
+  page](https://virginiaequitycenter.github.io/vaequity-reading/)**:
+  `vaequity-reading/index.html`
+- **Reading gaps dumbbell page**: `vaequity-reading/reading_tornado/`
+  folder
+  - [Page](https://virginiaequitycenter.github.io/vaequity-reading/tornado/)
+    outline: `reading_tornado/index.html`
+  - [App](https://virginiaequitycenter.shinyapps.io/tornado/):
+    `reading_tornado/app.R` –\> iframed into page
+  - Data:
+    - Raw data collected from VDOE build-a-table and stored in
+      `dataprep/data/2005_2023_data/reading/` folder
+    - Processed in `dataprep/2023_gap_charts_dataprep.R`
+    - Exported as
+      `dataprep/data/2005_2023_data/2005_2023_reading_complete_data.csv`
+      –\> also stored on Box
+    - Simulated in `reading_tornado_plot_modeling.R` –\> reads in Box
+      data
+    - Exported as `reading_tornado/final_reading_tornado.csv` where it
+      is used in the app
+- **Math gaps dumbbell page**: `vaequity-reading/math_tornado/` folder
+  - [Page](https://virginiaequitycenter.github.io/vaequity-reading/math_tornado/)
+    outline: `math_tornado/index.html`
+  - [App](https://virginiaequitycenter.shinyapps.io/math_tornado/):
+    `math_tornado/app.R` –\> iframed into page
+  - Data:
+    - Raw data collected from VDOE build-a-table and stored in
+      `dataprep/data/2005_2023_data/math/` folder
+    - Processed in `dataprep/2023_gap_charts_dataprep.R`
+    - Exported as
+      `dataprep/data/2005_2023_data/2005_2023_math_complete_data.csv`
+      –\> also stored on Box
+    - Simulated in `math_tornado/math_tornado_plot_modeling.R` –\> reads
+      in Box data
+    - Exported as `math_tornado/final_math_tornado.csv` where it is used
+      in the app
+- **3rd grade reading and 6th grade math page**: note the different
+  folders for page and app
+  - [Page](https://virginiaequitycenter.github.io/vaequity-reading/thirdgrade/):
+    `thirdgrade/index.html`
+  - [App](https://virginiaequitycenter.shinyapps.io/solpassrates/):
+    `solpasrates/math_app_gr6_2023.R` –\> iframed into page
+  - Data: `solpassrates/2005_2023_math_all_students_all_divisions.csv`
+    and `solpassrates/2005_2023_reading_all_students_all_divisions.csv`
+- **Reading cohort page**:
+  - [Page](https://virginiaequitycenter.github.io/vaequity-reading/details/):
+    `details/index.html`
+  - Cohort charts: `assets/js/gap_chart.js`
+  - Data:
+    - Raw data collected from VDOE build-a-table and stored in
+      `dataprep/data/old_data/2005_2019_data/`
+    - Processed in `dataprep/gap_charts_dataprep.R`
+    - Stored in `assets/data/cohort_2019.csv`
+- **[Methods
+  page](https://virginiaequitycenter.github.io/vaequity-reading/methods/)**:
+  `methods/index.html`
