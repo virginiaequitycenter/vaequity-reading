@@ -10,11 +10,11 @@ library(magrittr)
 
 # 1 Get data ----
 
-box_auth() #set up your box app at: https://r-box.github.io/boxr/articles/boxr-app-interactive.html
+#box_auth() #set up your box app at: https://r-box.github.io/boxr/articles/boxr-app-interactive.html
 #math <- box_read_csv(1489555264174) #2005_2023_math_complete_data hold for math 
 
 # Read in complete reading data 
-reading_complete_data <- box_read_csv(1489544488173) #2005_2023_reading_complete_data
+reading_complete_data <- read_csv("dataprep/data/2024_complete_data_read.csv")
 
 division_list <-
 reading_complete_data %>%
@@ -52,7 +52,7 @@ reading_race_data %>%
   pull(division_name) %>%
   unique()
 
-#reading_race_data[is.na(reading_race_data)] <- 0 
+reading_race_data[is.na(reading_race_data)] <- 0 
 reading_race_data$total_count[reading_race_data$pass_count == 0] <- 0  
 
 # If the numerator equals zero/is not measured then set the denominator to 0 as well
@@ -137,7 +137,7 @@ reading_ses_data %>%
   pull(division_name) %>%
   unique()
 
-#reading_ses_data[is.na(reading_ses_data)] <- 0 not sure what this does
+reading_ses_data[is.na(reading_ses_data)] <- 0 
 reading_ses_data$total_count[reading_ses_data$pass_count == 0] <- 0  
 
 # Prep for simulation 
@@ -302,7 +302,7 @@ final_reading_tornado %>%
   arrange(desc(dif) )%>%
   mutate(rank = ceiling((1:n())/2)   ) %>%
   left_join(division_list) %>%
-  write_csv("final_reading_tornado.csv")
+  write_csv("reading_tornado/final_reading_tornado_2024.csv")
 
 # Not done: 
 # ELL Simulation ----------------------------------------------------------

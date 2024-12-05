@@ -6,7 +6,7 @@ library(magrittr)
 
 # 1 Get data ---
 
-tornado <- read_csv("final_reading_tornado.csv")
+tornado <- read_csv("final_reading_tornado_2024.csv")
 
 capFirst <- function(s) {
   paste(toupper(substring(s, 1, 1)), substring(s, 2), sep = "")

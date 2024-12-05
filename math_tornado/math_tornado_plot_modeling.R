@@ -10,8 +10,11 @@ library(magrittr)
 
 # 1 Get data ----
 
-box_auth() #set up your box app at: https://r-box.github.io/boxr/articles/boxr-app-interactive.html
-math <- box_read_csv(1489555264174) #2005_2023_math_complete_data hold for math 
+#box_auth() #set up your box app at: https://r-box.github.io/boxr/articles/boxr-app-interactive.html
+#math <- box_read_csv(1489555264174) #2005_2023_math_complete_data hold for math 
+
+math <- read_csv("dataprep/data/2024_complete_data_math.csv")
+
 
 division_list <-
   math %>%
@@ -83,7 +86,7 @@ math_race_data_byyear <- math_race_data_byyear %>%
   mutate(model = map(data, yearly_model))
 
 # Intermediary step so you don't crash R :)
-#saveRDS(math_race_data_byyear, "math_race_data_byyear.RDS")
+saveRDS(math_race_data_byyear, "math_race_data_byyear.RDS")
 
 # Get model coefficients 
 math_race_data_byyear <- math_race_data_byyear %>%
@@ -157,7 +160,7 @@ math_ses_data_byyear_models <- math_ses_data_byyear %>%
   mutate(model = map(data, yearly_model))
 
 # Intermediary step so that you don't crash RStudio :) 
-#saveRDS(math_ses_data_byyear_models, "math_ses_data_byyear_models.RDS")
+saveRDS(math_ses_data_byyear_models, "math_ses_data_byyear_models.RDS")
 
 # Need to know which one is the base level and which is modeled
 math_ses_data_byyear_models$model[[2]]
@@ -293,7 +296,7 @@ final_math_tornado %>%
   arrange(desc(dif) )%>%
   mutate(rank = ceiling((1:n())/2)   ) %>%
   left_join(division_list) %>%
-  write_csv("final_math_tornado.csv")
+  write_csv("math_tornado/final_math_tornado_2024.csv")
 
 # Not done: ELL Simulation ----------------------------------------------------------
 

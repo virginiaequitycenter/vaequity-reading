@@ -163,7 +163,7 @@ overall <-
          years_from_end = max_grade - grade,
          cohort = test_year + years_from_end 
   )  
-
+# Use division number exclusively in future years add re-add division name later in the process?
 division_regions <- read_csv("dataprep/data/region_divisions.csv") %>%
   mutate(division = case_when(
     division %in% c("Colonial Beach", "West Point","Alleghany Highlands") ~ division,
