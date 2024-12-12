@@ -1,4 +1,4 @@
-const education = d3.csv("../assets/data/cohort_2019.csv");
+const education = d3.csv("1_dataprep/data/cohort_2019.csv");
 var ed_data;
 var ed_data_filtered;
 
