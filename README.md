@@ -37,4 +37,5 @@ students.
 The site is deployed using Github pages, and is designed to be modular
 so that each data processing and app development step is separated from
 another. The data processing and modeling are done in steps 1 and 2, and
-the applications are created in steps 3 - 5.
+the applications are created in steps 3 - 5. The apps are then iframed
+into place on their respective html pages.
