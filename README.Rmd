@@ -11,13 +11,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-# **Education Inequity in Virginia**
+
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-README updated: November 2024
+**This Repository is archived and no longer used to produce SOL test outcome data, related shinyapps, or the public facing website. See https://github.com/communitypartnerships/sol-test-outcomes for current work.**
+
+README updated: December 2024
+
+# Education Inequity in Virginia
 
 This repo hosts the R code to collect and prepare data and to build the Reading and Math SOL Test Outcomes website for exploring education inequities in Virginia.
 
